@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client"
 
 const globalForPrisma = global;
 let prisma;
@@ -12,4 +12,4 @@ if (process.env.NODE_ENV === "production") {
   prisma = globalForPrisma.prisma;
 }
 
-module.exports = prisma;
+export default prisma;
