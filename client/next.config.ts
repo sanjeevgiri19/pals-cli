@@ -1,7 +1,18 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    // Option 1: simple domain whitelist
+    domains: ["avatars.githubusercontent.com"],
 
-const nextConfig: NextConfig = {
-  /* config options here */
+    // Option 2: more flexible remotePatterns (Next.js 13+)
+    // remotePatterns: [
+    //   {
+    //     protocol: "https",
+    //     hostname: "avatars.githubusercontent.com",
+    //   },
+    // ],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
