@@ -1,4 +1,6 @@
 import { TOKEN_FILE } from "../cli/commands/auth/login.js";
+import fs from "fs/promises";
+
 
 export async function getStoredToken() {
   try {

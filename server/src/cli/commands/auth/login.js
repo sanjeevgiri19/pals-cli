@@ -197,11 +197,11 @@ async function pollForToken(authClient, deviceCode, clientId, interval) {
           grant_type: "urn:ietf:params:oauth:grant-type:device_code",
           device_code: deviceCode,
           client_id: clientId,
-          // fetchOptions: {
-          //   headers: {
-          //     "user-agent": `Better Auth CLI`,
-          //   },
-          // },
+          fetchOptions: {
+            headers: {
+              "user-agent": `Better Auth CLI`,
+            },
+          },
         });
 
         //success -> return token
