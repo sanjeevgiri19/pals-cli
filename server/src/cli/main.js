@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import chalk from "chalk";
 import figlet from "figlet";
 import { Command } from "commander";
+import { login } from "./commands/auth/login.js";
 
 dotenv.config();
 
@@ -23,7 +24,10 @@ async function main() {
 
   const program = new Command("palCLI");
 
-  program.version("0.0.1").description("Pal CLI- A CLI based AI Tool");
+  program
+    .version("0.0.1")
+    .description("Pal CLI- A CLI based AI Tool")
+    .addCommand(login);
 
   //default action shows help
   program.action(() => {
