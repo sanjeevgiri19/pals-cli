@@ -5,7 +5,6 @@ import { deviceAuthorizationClient } from "better-auth/client/plugins";
 
 import chalk from "chalk";
 import { Command } from "commander";
-import fs from "fs/promises";
 import open from "open";
 import os from "os";
 import path from "path";
@@ -13,7 +12,7 @@ import yoctoSpinner from "yocto-spinner";
 import dotenv from "dotenv";
 import * as z from "zod/v4";
 import prisma from "../../../lib/db.js";
-import { getStoredToken, isTokenExpired } from "../../../lib/token.js";
+import { clearStoredToken, getStoredToken, isTokenExpired, storeToken } from "../../../lib/token.js";
 
 dotenv.config();
 
@@ -184,14 +183,64 @@ export async function loginAction(opts) {
       clientId,
       interval,
     );
-  } catch (error) {}
+
+    if (token) {
+      // Store the token
+      const saved = await storeToken(token);
+
+      if (!saved) {
+        console.log(
+          chalk.yellow("\n⚠️  Warning: Could not save authentication token."),
+        );
+        console.log(
+          chalk.yellow("   You may need to login again on next use."),
+        );
+      }
+      // Get user info
+      const { data: session } = await authClient.getSession({
+        fetchOptions: {
+          headers: {
+            Authorization: `Bearer ${token.access_token}`,
+          },
+        },
+      });
+
+      outro(
+        chalk.green(
+          `✅ Login successful! Welcome ${
+            session?.user?.name || session?.user?.email || "User"
+          }`,
+        ),
+      );
+
+      console.log(chalk.gray(`\n📁 Token saved to: ${TOKEN_FILE}`));
+      console.log(
+        chalk.gray(
+          "   You can now use AI commands without logging in again.\n",
+        ),
+      );
+    }
+  } catch (err) {
+    spinner.stop();
+    console.error(chalk.red("\nLogin failed:"), err.message);
+    process.exit(1);
+  }
 }
 
 // polling function for OAuth device flow
-async function pollForToken(authClient, deviceCode, clientId, interval) {
-  const pollingInterval = interval;
-  return new Promise((resolve) => {
+async function pollForToken(authClient, deviceCode, clientId, initialInterval) {
+  let pollingInterval = initialInterval;
+  const spinner = yoctoSpinner({ text: "", color: "cyan" });
+  let dots = 0;
+
+  return new Promise((resolve, reject) => {
     const poll = async () => {
+      dots = (dots + 1) % 4;
+      spinner.text = chalk.gray(
+        `Polling for authorization${".".repeat(dots)}${" ".repeat(3 - dots)}`,
+      );
+      if (!spinner.isSpinning) spinner.start();
+
       try {
         const { data, error } = await authClient.device.token({
           grant_type: "urn:ietf:params:oauth:grant-type:device_code",
@@ -204,8 +253,11 @@ async function pollForToken(authClient, deviceCode, clientId, interval) {
           },
         });
 
-        //success -> return token
-        if (!data?.access_token) {
+        if (data?.access_token) {
+          console.log(
+            chalk.bold.yellow(`Your access token: ${data.access_token}`),
+          );
+          spinner.stop();
           resolve(data);
           return;
         } else if (error) {
@@ -240,8 +292,73 @@ async function pollForToken(authClient, deviceCode, clientId, interval) {
 
       setTimeout(poll, pollingInterval * 1000);
     };
+
     setTimeout(poll, pollingInterval * 1000);
   });
+}
+
+export async function logoutAction() {
+  intro(chalk.bold("👋 Logout"));
+
+  const token = await getStoredToken();
+
+  if (!token) {
+    console.log(chalk.yellow("You're not logged in."));
+    process.exit(0);
+  }
+
+  const shouldLogout = await confirm({
+    message: "Are you sure you want to logout?",
+    initialValue: false,
+  });
+
+  if (isCancel(shouldLogout) || !shouldLogout) {
+    cancel("Logout cancelled");
+    process.exit(0);
+  }
+
+  const cleared = await clearStoredToken();
+
+  if (cleared) {
+    outro(chalk.green("✅ Successfully logged out!"));
+  } else {
+    console.log(chalk.yellow("⚠️  Could not clear token file."));
+  }
+}
+
+// ============================================
+// WHOAMI COMMAND
+// ============================================
+
+export async function whoamiAction(opts) {
+  const token = await requireAuth();
+  if (!token?.access_token) {
+    console.log("No access token found. Please login.");
+    process.exit(1);
+  }
+
+  const user = await prisma.user.findFirst({
+    where: {
+      sessions: {
+        some: {
+          token: token.access_token,
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+    },
+  });
+
+  // Output user session info
+  console.log(
+    chalk.bold.greenBright(`\n👤 User: ${user.name}
+📧 Email: ${user.email}
+👤 ID: ${user.id}`),
+  );
 }
 
 //COMMANDER SETUP
@@ -251,11 +368,11 @@ export const login = new Command("login")
   .option("--client-id <id>", "The OAuth client ID", CLIENT_ID)
   .action(loginAction);
 
-// export const logout = new Command("logout")
-//   .description("Logout and clear stored credentials")
-//   .action(logoutAction);
+export const logout = new Command("logout")
+  .description("Logout and clear stored credentials")
+  .action(logoutAction);
 
-// export const whoami = new Command("whoami")
-//   .description("Show current authenticated user")
-//   .option("--server-url <url>", "The Better Auth server URL", DEMO_URL)
-//   .action(whoamiAction);
+export const whoami = new Command("whoami")
+  .description("Show current authenticated user")
+  .option("--server-url <url>", "The Better Auth server URL", URL)
+  .action(whoamiAction);
