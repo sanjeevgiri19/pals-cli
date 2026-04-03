@@ -5,6 +5,7 @@ import chalk from "chalk";
 import figlet from "figlet";
 import { Command } from "commander";
 import { login, logout, whoami } from "./commands/auth/login.js";
+import { wakeup } from "./commands/ai/wakeUp.js";
 
 dotenv.config();
 
@@ -29,7 +30,8 @@ async function main() {
     .description("Pal CLI- A CLI based AI Tool")
     .addCommand(login)
     .addCommand(logout)
-    .addCommand(whoami);
+    .addCommand(whoami)
+    .addCommand(wakeup);
 
   //default action shows help
   program.action(() => {

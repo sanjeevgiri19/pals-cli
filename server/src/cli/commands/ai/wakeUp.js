@@ -4,6 +4,7 @@ import yoctoSpinner from "yocto-spinner";
 import { getStoredToken } from "../../../lib/token.js";
 import prisma from "../../../lib/db.js";
 import { select } from "@clack/prompts";
+import { startChat } from "../../chat/chat-with-ai.js";
 
 const wakeUpAction = async () => {
   const token = await getStoredToken();
@@ -65,12 +66,15 @@ const wakeUpAction = async () => {
   switch (choice) {
     case "chat":
       await startChat("chat");
+      // console.log("Chat is selected");
       break;
     case "tool":
-      await startToolChat();
+      // console.log("tool is selected");
+      // await startToolChat();
       break;
     case "agent":
-      await startAgentChat();
+      // console.log(" agent Chat is selected");
+      // await startAgentChat();
       break;
   }
 };
