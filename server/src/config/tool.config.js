@@ -110,21 +110,28 @@ export function enableTools(toolIds) {
   );
 }
 
+
 /**
- * Get all enabled tool names
+ * Get names of enabled tools
  */
 export function getEnabledToolNames() {
-  const names = availableTools.filter((t) => t.enabled).map((t) => t.name);
-  console.log(chalk.gray("[DEBUG] getEnabledToolNames returning:"), names);
-  return names;
+  return availableTools.filter((t) => t.enabled).map((t) => t.name);
 }
 
 /**
- * Reset all tools (disable all)
+ * Enable specific tools by ID
+ */
+// export function enableTools(toolIds) {
+//   for (const toolConfig of availableTools) {
+//     toolConfig.enabled = toolIds.includes(toolConfig.id);
+//   }
+// }
+
+/**
+ * Reset all tools to disabled state
  */
 export function resetTools() {
-  availableTools.forEach((tool) => {
-    tool.enabled = false;
-  });
-  console.log(chalk.gray("[DEBUG] All tools have been reset (disabled)"));
+  for (const toolConfig of availableTools) {
+    toolConfig.enabled = false;
+  }
 }

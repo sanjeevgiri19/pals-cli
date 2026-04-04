@@ -12,7 +12,13 @@ export async function getStoredToken() {
     const token = JSON.parse(data);
     return token;
   } catch (error) {
-    // File doesn't exist or can't be read
+    // File doesn't exist or can't be read or invalid JSON
+    if (error.code !== "ENOENT") {
+      console.error(
+        chalk.yellow("Warning: Token file exists but contains invalid JSON"),
+        error.message,
+      );
+    }
     return null;
   }
 }

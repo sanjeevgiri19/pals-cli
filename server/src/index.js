@@ -4,11 +4,11 @@ import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import cors from "cors";
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3005;
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
@@ -64,8 +64,16 @@ app.use(express.json());
 // });
 
 app.get("/device", async (req, res) => {
-  const { user_code } = req.query; // Fixed: should be req.query, not req.params
-  res.redirect(`http://localhost:3000/device?user_code=${user_code}`);
+  try {
+    const { user_code } = req.query; // Fixed: should be req.query, not req.params
+    if (!user_code) {
+      return res.status(400).json({ error: "user_code is required" });
+    }
+    res.redirect(`http://localhost:3000/device?user_code=${user_code}`);
+  } catch (error) {
+    console.error("Device redirect error:", error);
+    res.status(500).json({ error: "Redirect failed", details: error.message });
+  }
 });
 
 app.listen(port, () => {

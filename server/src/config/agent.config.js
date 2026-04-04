@@ -1,30 +1,24 @@
-import z from "zod";
+import { promises as fs } from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import { generateObject } from 'ai';
+import { z } from 'zod';
 
+/**
+ * Zod schema for structured application generation
+ */
 const ApplicationSchema = z.object({
-  folderName: z.string().describe("Hebab-Case folder name for the application"),
-  description: z.string().describe("Brief description of what was created"),
+  folderName: z.string().describe('Kebab-case folder name for the application'),
+  description: z.string().describe('Brief description of what was created'),
   files: z.array(
-    z
-      .object({
-        path: z.string().describe("Relative file path (e.g src/App.jsx )"),
-        content: z.string().describe("Complete file content"),
-      })
-      .describe("All files needed for the applications"),
-  ),
-  setUpCommands: z.array(
-    z
-      .string()
-      .describe(
-        "Bash commands to setup and run (e.g: npm install, npm run dev",
-      ),
-  ),
-  dependencies: z
-    .record(z.string())
-    .optional()
-    .describe("NPM dependencies with versions"),
+    z.object({
+      path: z.string().describe('Relative file path (e.g., src/App.jsx)'),
+      content: z.string().describe('Complete file content'),
+    })
+  ).describe('All files needed for the application'),
+  setupCommands: z.array(z.string()).describe('Bash commands to setup and run (e.g., npm install, npm run dev)'),
 });
 
- 
 /**
  * Console logging helpers
  */
