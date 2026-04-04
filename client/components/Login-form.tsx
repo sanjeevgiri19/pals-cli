@@ -8,6 +8,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
+/**
+ * Render a login form that provides a GitHub social sign-in action.
+ *
+ * The UI includes a logo, heading, subtitle, and a full-width "Continue With GitHub" button;
+ * clicking the button initiates a GitHub social sign-in via `authClient` using the callback URL `http://localhost:3000`.
+ *
+ * @returns The login form as a JSX element
+ */
 export function LoginForm() {
   const router = useRouter();
   // const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +32,7 @@ export function LoginForm() {
   return (
     <div className="flex flex-col gap-6 justify-center items-center ">
       <div className="flex flex-col items-center justify-center space-y-4">
-        <Image src={"/login.svg"} alt="Login" height={200} width={200} />
+        <Image src={"/goodLogo.svg"} alt="Login" height={200} width={200} />
         <h1 className="text-6xl font-extrabold text-indigo-400">
           Welcome Back! to Orbital Cli
         </h1>
@@ -48,7 +56,7 @@ export function LoginForm() {
                 }
               >
                 <Image
-                  src={"/github.svg"}
+                  src={"/file.svg"}
                   alt="Github"
                   height={16}
                   width={16}

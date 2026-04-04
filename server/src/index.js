@@ -2,6 +2,9 @@ import express from "express";
 import { auth } from "./lib/auth.js";
 import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import cors from "cors";
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
+import conversationRoutes from "./routes/conversations.js";
+import messageRoutes from "./routes/messages.js";
 
 const app = express();
 const port = process.env.PORT || 3005;
@@ -17,6 +20,10 @@ app.use(
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
+
+// Register API routes
+app.use("/api/conversations", conversationRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Fixed: This endpoint now properly handles Bearer token authentication
 // app.get("/api/me", async (req, res) => {
@@ -75,6 +82,12 @@ app.get("/device", async (req, res) => {
     res.status(500).json({ error: "Redirect failed", details: error.message });
   }
 });
+
+// 404 handler for unmatched routes
+app.use(notFoundHandler);
+
+// Global error handler (must be last)
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

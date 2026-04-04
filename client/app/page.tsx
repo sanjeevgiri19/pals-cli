@@ -1,11 +1,18 @@
 "use client";
-import { Button } from "@/components/ui/button";
+
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
-import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function Home() {
+/**
+ * Render the landing page UI and redirect unauthenticated users to the sign-in page.
+ *
+ * Renders a centered loading spinner while session state is pending. If no session or user is present, triggers a client-side navigation to "/sign-in". Otherwise renders the public homepage with hero content and navigation links.
+ *
+ * @returns The React element for the homepage.
+ */
+export default function HomePage() {
   const { data, isPending } = authClient.useSession();
   const router = useRouter();
 
@@ -22,69 +29,50 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background font-sans">
-      <div className="w-full max-w-md px-4">
-        <div className="space-y-8">
-          {/* Profile Header Card */}
-          <div className="border-2 border-dashed border-zinc-700 rounded-2xl p-8 bg-zinc-900/50 backdrop-blur-sm">
-            {/* Avatar */}
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                <Image
-                  src={data?.user?.image || "/vercel.svg"}
-                  alt={data?.user?.name || "User"}
-                  width={120}
-                  height={120}
-                  className="rounded-full border-2 border-dashed border-zinc-600 object-cover"
-                />
-                <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full border-2 border-zinc-900"></div>
-              </div>
-            </div>
+    <div className="max-w-6xl mx-auto p-8">
+      <section className="text-center py-24">
+        <h1 className="text-4xl font-bold mb-4">
+          PAL CLI — AI Assistant for Devs
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          Chat with AI, run developer tools, or use the CLI to integrate PAL
+          into your workflows. Start a conversation or explore the docs.
+        </p>
 
-            {/* User Info */}
-            <div className="space-y-3 text-center">
-              <h1 className="text-3xl font-bold text-zinc-50 truncate">
-                Welcome, {data?.user?.name || "User"}
-              </h1>
-              <p className="text-sm text-zinc-400">Authenticated User</p>
-            </div>
-          </div>
-
-          {/* User Details Card */}
-          <div className="border-2 border-dashed border-zinc-700 rounded-2xl p-6 bg-zinc-900/50 backdrop-blur-sm space-y-4">
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">
-                Email Address
-              </p>
-              <p className="text-lg text-zinc-100 font-medium break-all">
-                {data?.user?.email}
-              </p>
-            </div>
-          </div>
-
-          {/* Sign Out Button */}
-          <Button
-            onClick={() =>
-              authClient.signOut({
-                fetchOptions: {
-                  onError: (ctx) => console.log(ctx),
-                  onSuccess: () => router.push("/sign-in"),
-                },
-              })
-            }
-            className="w-full h-11 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+        <div className="mt-8 flex justify-center gap-4">
+          <Link
+            href="/chat"
+            className="px-6 py-3 bg-blue-600 text-white rounded-md"
           >
-            Sign Out
-          </Button>
-
-          {/* Decorative divider */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px border-t border-dashed border-zinc-700"></div>
-            <span className="text-xs text-zinc-600">Session Active</span>
-            <div className="flex-1 h-px border-t border-dashed border-zinc-700"></div>
-          </div>
+            Launch Chat
+          </Link>
+          <Link href="/about" className="px-6 py-3 border rounded-md">
+            Learn More
+          </Link>
         </div>
-      </div>
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-6 border rounded-lg">
+          <h3 className="font-semibold mb-2">Chat</h3>
+          <p className="text-sm text-gray-500">
+            Ask questions, get code snippets, and iterate with the assistant.
+          </p>
+        </div>
+        <div className="p-6 border rounded-lg">
+          <h3 className="font-semibold mb-2">CLI</h3>
+          <p className="text-sm text-gray-500">
+            Use `palcli` to run commands locally and integrate AI into
+            pipelines.
+          </p>
+        </div>
+        <div className="p-6 border rounded-lg">
+          <h3 className="font-semibold mb-2">Integrations</h3>
+          <p className="text-sm text-gray-500">
+            Connect to tools like Google, GitHub, and more via plugins.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

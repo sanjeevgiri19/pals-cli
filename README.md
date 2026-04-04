@@ -1,0 +1,163 @@
+# PAL CLI
+
+> PAL CLI — an AI assistant for developers with a web chat UI and a CLI interface.
+
+PAL CLI provides an interactive chat experience (web + CLI), integrates with external tools, and exposes an HTTP API backed by a Node/Express server and Prisma for persistence.
+
+---
+
+## What it is
+
+- A developer-focused AI assistant combining:
+  - A browser-based chat interface (Next.js + React) with conversations, messages, and streaming support.
+  - A command-line client (`palcli`) to run assistant commands from your terminal.
+  - A backend API (Express + Prisma) that stores conversations and messages and connects to auth providers.
+
+## Features
+
+- Real-time chat interface with conversation history
+- CLI interface to chat and run AI-driven developer commands
+- Persistent conversations and messages (Postgres via Prisma)
+- Authentication (OAuth / device flow via Better-Auth)
+- Extensible agent / tool plugins (Google, GitHub, etc.)
+- SSE streaming support for assistant partial outputs
+
+## Tech stack
+
+- Client: Next.js (app router), React, TypeScript, Tailwind CSS, shadcn UI
+- State: Zustand (auth), TanStack Query (data fetching)
+- Server: Node.js, Express, Prisma (Postgres)
+- Auth: better-auth
+- Other: highlight.js, marked, axios, commander, figlet, open
+
+## Getting started — Clone
+
+```bash
+git clone https://github.com/sanjeevgiri19/pal-cli.git
+cd pal-cli
+```
+
+There are two main workspaces: `server/` and `client/`.
+
+## Install dependencies
+
+From the project root you can install both sides separately.
+
+```bash
+# Server
+cd server
+npm install
+
+# Client
+cd ../client
+npm install
+```
+
+## Environment variables
+
+Create `.env` (server) and `.env.local` (client) files based on these examples.
+
+Server (`server/.env`) example:
+
+```
+# Server - example
+PORT=3005
+DATABASE_URL=postgresql://user:password@localhost:5432/palcli
+
+# session/secret for your auth plugin
+SESSION_SECRET=replace_with_a_secure_value
+
+# OAuth / provider keys
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+
+# Google / other integrations
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+```
+
+Client (`client/.env.local`) example:
+
+```
+# Client - example
+NEXT_PUBLIC_API_URL=http://localhost:3005
+```
+
+Notes:
+- Use secure secrets in production. Never commit `.env` files with secrets to source control.
+- Adjust `NEXT_PUBLIC_API_URL` to point to your deployed server base URL when not running locally.
+
+## Database (Prisma)
+
+1. Ensure Postgres is running and `DATABASE_URL` is set correctly.
+2. Run migrations:
+
+```bash
+cd server
+npm run prisma:migrate
+# or
+npx prisma migrate dev --name init
+```
+
+## Run in development
+
+Open two terminals (or use a process manager), one for the server and one for the client.
+
+Server
+
+```bash
+cd server
+npm run dev
+```
+
+Client
+
+```bash
+cd client
+npm run dev
+```
+
+The web UI will be available at `http://localhost:3000` and the API at the server port (default `http://localhost:3005`).
+
+## Usage
+
+- Web: open the app in a browser, sign in (via configured provider), create or select conversations, and chat.
+- CLI: after installing or linking the CLI (see `client` or `server/cli`), run `palcli chat` to start a terminal chat session.
+
+## Troubleshooting
+
+- If you get 401 responses from `/api/*` endpoints while signed in, confirm:
+  - `NEXT_PUBLIC_API_URL` points to the correct server
+  - The server has the auth provider configured and secrets set
+  - Browser cookies are sent (http-only cookies used for session)
+
+- If the UI redirects to `/sign-in` prematurely, the client may be issuing API requests before the auth sync is initialized. Try:
+  - Reloading the page
+  - Clearing localStorage (auth persistence) and re-signing in
+
+## Tests
+
+If tests exist for the client or server, run them with the respective package scripts (e.g., `npm test`).
+
+## Contributing
+
+Contributions are welcome. Suggested workflow:
+
+1. Fork the repo
+2. Create a feature branch
+3. Make changes and run the app locally
+4. Open a pull request with a clear description
+
+<!-- ## License
+
+Add your license here (MIT, Apache-2.0, etc.) -->
+
+---
+<!-- 
+If you'd like, I can also:
+
+- Add a `CONTRIBUTING.md` with more detailed developer setup steps
+- Add a quickstart script and `Makefile` to start both server/client with one command
+- Add CI configuration to run tests/linting on PRs
+
+Feel free to tell me what you want included or any preferred wording and I will update the README. -->

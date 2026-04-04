@@ -8,6 +8,13 @@ import { useState } from "react";
 import { CheckCircle, XCircle, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 
+/**
+ * Renders the device authorization UI and handles approving or denying a device using the URL `user_code`.
+ *
+ * Displays a full-screen loading view while the session is pending, redirects to "/sign-in" if the user is not authenticated, and otherwise shows the authorization code, account info, and action buttons. Clicking the action buttons initiates device approval or denial requests, shows toast notifications for progress and outcome, and navigates to the home page on success.
+ *
+ * @returns The React element for the device approval page.
+ */
 export default function DeviceApprovalContent() {
   const { data, isPending } = authClient.useSession();
   const router = useRouter();
@@ -41,6 +48,8 @@ export default function DeviceApprovalContent() {
       router.push("/");
     } catch (error) {
       toast.error("Failed to approve device");
+      console.log("err", error);
+      
     }
     setIsProcessing({ approve: false, deny: false });
   };
@@ -55,6 +64,8 @@ export default function DeviceApprovalContent() {
       router.push("/");
     } catch (error) {
       toast.error("Failed to deny device");
+      console.log("err", error);
+      
     }
     setIsProcessing({ approve: false, deny: false });
   };

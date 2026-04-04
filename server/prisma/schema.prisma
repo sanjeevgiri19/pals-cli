@@ -105,10 +105,11 @@ model Message {
   id             String   @id @default(cuid())
   conversationId String
   role           String   // user, assistant, system, tool
-  content        String   // JSON string for complex content
+  content        String   @db.Text // @db.Text for longer content
   createdAt      DateTime @default(now())
   
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   
-  @@index([conversationId])
+  // Composite index for pagination queries
+  @@index([conversationId, createdAt])
 }

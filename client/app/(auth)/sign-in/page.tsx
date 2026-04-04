@@ -17,7 +17,7 @@ const Page = () => {
   }
 
   if (data?.session && data?.user) {
-    router.push("/");
+    router.push("/chat");
   }
   return <LoginForm />;
 };
