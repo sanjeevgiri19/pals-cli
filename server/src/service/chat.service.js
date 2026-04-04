@@ -1,4 +1,5 @@
 import prisma from "../lib/db.js";
+import chalk from "chalk";
 
 export class ChatService {
   /**
@@ -132,7 +133,14 @@ export class ChatService {
   parseContent(content) {
     try {
       return JSON.parse(content);
-    } catch {
+    } catch (error) {
+      // Content is not JSON, return as is
+      if (!(error instanceof SyntaxError)) {
+        console.warn(
+          chalk.gray("[DEBUG] Failed to parse message content:"),
+          error.message,
+        );
+      }
       return content;
     }
   }

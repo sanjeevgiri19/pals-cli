@@ -56,7 +56,7 @@ export async function loginAction(opts) {
 
   //use provided or fallback values
   const serverUrl = options.serverUrl || URL;
-  const clientId = options.clientId || clientId;
+  const clientId = options.clientId || CLIENT_ID;
 
   //show cli intro
   intro(chalk.bold("Better Auth CLI Login"));

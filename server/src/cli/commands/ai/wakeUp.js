@@ -6,77 +6,80 @@ import prisma from "../../../lib/db.js";
 import { select } from "@clack/prompts";
 import { startChat } from "../../chat/chat-with-ai.js";
 import { startToolChat } from "../../chat/chat-with-ai-tools.js";
+import { startAgentChat } from "../../chat/chat-with-ai-agent.js";
 
 const wakeUpAction = async () => {
-  const token = await getStoredToken();
+  try {
+    const token = await getStoredToken();
 
-  if (!token?.access_token) {
-    console.log(chalk.red("Not Authenticated. please login"));
-    return;
-  }
+    if (!token?.access_token) {
+      console.log(chalk.red("Not Authenticated. please login"));
+      return;
+    }
 
-  const spinner = yoctoSpinner({ text: "Fetching user information" });
-  spinner.start();
+    const spinner = yoctoSpinner({ text: "Fetching user information" });
+    spinner.start();
 
-  const user = await prisma.user.findFirst({
-    where: {
-      sessions: {
-        some: {
-          token: token.access_token,
+    const user = await prisma.user.findFirst({
+      where: {
+        sessions: {
+          some: {
+            token: token.access_token,
+          },
         },
       },
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      image: true,
-    },
-  });
-
-  spinner.stop();
-
-  if (!user) {
-    console.log(chalk.red("User not found."));
-    return;
-  }
-
-  console.log(chalk.green(`Welcome back, ${user.name}!\n`));
-
-  const choice = await select({
-    message: "Select an option:",
-    options: [
-      {
-        value: "chat",
-        label: "Chat",
-        hint: "Simple chat with AI",
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
       },
-      {
-        value: "tool",
-        label: "Tool Calling",
-        hint: "Chat with tools (Google Search, Code Execution)",
-      },
-      {
-        value: "agent",
-        label: "Agentic Mode",
-        hint: "Advanced AI agent (Coming soon)",
-      },
-    ],
-  });
+    });
 
-  switch (choice) {
-    case "chat":
-      await startChat("chat");
-      // console.log("Chat is selected");
-      break;
-    case "tool":
-      // console.log("tool is selected");
-      await startToolChat();
-      break;
-    case "agent":
-      // console.log(" agent Chat is selected");
-      // await startAgentChat();
-      break;
+    spinner.stop();
+
+    if (!user) {
+      console.log(chalk.red("User not found."));
+      return;
+    }
+
+    console.log(chalk.green(`Welcome back, ${user.name}!\n`));
+
+    const choice = await select({
+      message: "Select an option:",
+      options: [
+        {
+          value: "chat",
+          label: "Chat",
+          hint: "Simple chat with AI",
+        },
+        {
+          value: "tool",
+          label: "Tool Calling",
+          hint: "Chat with tools (Google Search, Code Execution)",
+        },
+        {
+          value: "agent",
+          label: "Agentic Mode",
+          hint: "Advanced AI agent (Coming soon)",
+        },
+      ],
+    });
+
+    switch (choice) {
+      case "chat":
+        await startChat("chat");
+        break;
+      case "tool":
+        await startToolChat();
+        break;
+      case "agent":
+        await startAgentChat();
+        break;
+    }
+  } catch (error) {
+    console.error(chalk.red("Error in wakeUp command:"), error.message);
+    process.exit(1);
   }
 };
 
