@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { AuthProvider } from "@/components/providers/AuthProvider";
+import { Navbar } from "@/components/ui/Navbar";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -39,7 +40,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-1">{children}</main>
+              </div>
+            </QueryProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

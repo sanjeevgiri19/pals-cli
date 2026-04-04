@@ -41,6 +41,8 @@ export default function DeviceApprovalContent() {
       router.push("/");
     } catch (error) {
       toast.error("Failed to approve device");
+      console.log("err", error);
+      
     }
     setIsProcessing({ approve: false, deny: false });
   };
@@ -55,6 +57,8 @@ export default function DeviceApprovalContent() {
       router.push("/");
     } catch (error) {
       toast.error("Failed to deny device");
+      console.log("err", error);
+      
     }
     setIsProcessing({ approve: false, deny: false });
   };

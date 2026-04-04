@@ -17,6 +17,9 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const [copiedContent, setCopiedContent] = useState<string | null>(null);
   const isUser = message.role === "user";
 
+  const authorInitial =
+    message.role === "user" ? (message as any).userId?.[0] || "U" : "A";
+
   // Configure marked with syntax highlighting
   marked.setOptions({
     highlight: (code, lang) => {
@@ -41,16 +44,24 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   return (
     <div
       className={cn(
-        "flex gap-3 mb-4",
+        "flex gap-3 mb-4 items-end",
         isUser ? "justify-end" : "justify-start",
       )}
     >
+      {!isUser && (
+        <div className="flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center">
+            {authorInitial}
+          </div>
+        </div>
+      )}
+
       <div
         className={cn(
-          "max-w-2xl rounded-lg px-4 py-2.5",
+          "max-w-2xl rounded-lg px-4 py-2.5 relative",
           isUser
             ? "bg-blue-600 text-white rounded-bl-none"
-            : "bg-gray-200 text-gray-900 rounded-br-none dark:bg-gray-800 dark:text-gray-100",
+            : "bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-100 rounded-br-none",
         )}
       >
         {isStreaming ? (
@@ -64,8 +75,9 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
         )}
-        <div className="text-xs mt-1 opacity-70">
-          {new Date(message.createdAt).toLocaleTimeString()}
+
+        <div className="text-xs mt-1 opacity-70 text-right">
+          <span>{new Date(message.createdAt).toLocaleTimeString()}</span>
         </div>
       </div>
 

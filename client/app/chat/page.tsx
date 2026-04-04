@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Menu } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 type ChatMode = "chat" | "tool" | "agent";
 
@@ -66,6 +67,8 @@ export default function ChatPage() {
       toast.success("Conversation created");
     } catch (error) {
       toast.error("Failed to create conversation");
+      console.log("err", error);
+      
     }
   };
 
@@ -85,6 +88,8 @@ export default function ChatPage() {
       toast.success("Message sent");
     } catch (error) {
       toast.error("Failed to send message");
+      console.log("err", error);
+      
     } finally {
       setIsStreaming(false);
     }
@@ -98,7 +103,7 @@ export default function ChatPage() {
     }
     // Clear Zustand and redirect
     try {
-      const { logout } = await import("@/stores/useAuthStore");
+      // const { logout } = await import("@/stores/useAuthStore");
       // call logout from store
       useAuthStore.getState().logout();
     } catch (e) {

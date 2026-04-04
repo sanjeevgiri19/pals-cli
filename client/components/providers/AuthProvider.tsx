@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Sync better-auth session to Zustand
           setAuthState(
             {
-              token: session.session.token,
+              token: session?.session.token,
               expiresAt: session.session.expiresAt,
               createdAt: session.session.createdAt,
               updatedAt: session.session.updatedAt,
