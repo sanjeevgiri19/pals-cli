@@ -7,6 +7,7 @@ import {
   deleteConversation,
   getConversationMessages,
 } from "../controllers/conversationController.js";
+import { sendMessage } from "../controllers/messageController.js";
 import {
   authMiddleware,
   ownershipMiddleware,
@@ -16,7 +17,11 @@ import {
   validateQuery,
   validateParams,
 } from "../middleware/validateRequest.js";
-import { conversationSchemas, querySchemas } from "../validation/schemas.js";
+import {
+  conversationSchemas,
+  querySchemas,
+  messageSchemas,
+} from "../validation/schemas.js";
 import z from "zod";
 
 const router = Router();
@@ -87,6 +92,24 @@ router.get(
   validateParams(z.object({ id: z.string() })),
   validateQuery(querySchemas.conversationMessages),
   getConversationMessages,
+);
+
+/**
+ * POST /api/conversations/:id/messages
+ * Send message and get AI response
+ * Supports both regular and streaming responses
+ */
+router.post(
+  "/:id/messages",
+  validateParams(z.object({ id: z.string() })),
+  validateBody(
+    z.object({
+      content: z.string().min(1).max(10000),
+      role: z.enum(["user", "assistant"]).default("user"),
+      stream: z.boolean().optional(),
+    }),
+  ),
+  sendMessage,
 );
 
 export default router;
