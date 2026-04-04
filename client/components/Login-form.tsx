@@ -24,7 +24,7 @@ export function LoginForm() {
   return (
     <div className="flex flex-col gap-6 justify-center items-center ">
       <div className="flex flex-col items-center justify-center space-y-4">
-        <Image src={"/login.svg"} alt="Login" height={200} width={200} />
+        <Image src={"/goodLogo.svg"} alt="Login" height={200} width={200} />
         <h1 className="text-6xl font-extrabold text-indigo-400">
           Welcome Back! to Orbital Cli
         </h1>
@@ -48,7 +48,7 @@ export function LoginForm() {
                 }
               >
                 <Image
-                  src={"/github.svg"}
+                  src={"/file.svg"}
                   alt="Github"
                   height={16}
                   width={16}

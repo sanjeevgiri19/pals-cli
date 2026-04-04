@@ -16,9 +16,9 @@ const Page = () => {
     );
   }
 
-  if (data?.session && data?.user) {
-    router.push("/");
-  }
+  // if (data?.session && data?.user) {
+  //   router.push("/");
+  // }
   return <LoginForm />;
 };
 
