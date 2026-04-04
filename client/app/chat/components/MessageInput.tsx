@@ -32,6 +32,18 @@ const MODES: { value: ChatMode; label: string; description: string }[] = [
   },
 ];
 
+/**
+ * Render a message composer with a selectable mode and submit controls.
+ *
+ * The component lets the user type a message, choose a chat mode (`chat`, `tool`, `agent`), and submit the message.
+ * Submitting (form submit or pressing Enter without Shift) calls `onSend` with the current content and mode, then clears
+ * and refocuses the input. The input and submit button are disabled when `isLoading` or `disabled` are true.
+ *
+ * @param onSend - Called when the user submits a non-empty message; receives `(content, mode)`
+ * @param isLoading - When true, disables input and shows a loading indicator on the submit button
+ * @param disabled - When true, disables the input and submit button (external control)
+ * @returns The MessageInput React element
+ */
 export function MessageInput({
   onSend,
   isLoading,

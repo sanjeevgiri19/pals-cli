@@ -3,8 +3,10 @@ import { sendSuccess, sendError, sendPaginated } from "../utils/response.js";
 import { getPaginationParams, formatPagination } from "../lib/pagination.js";
 
 /**
- * Get all conversations for user
- * GET /api/conversations
+ * Retrieve paginated conversations for the authenticated user, including each conversation's most recent message.
+ *
+ * Extracts `page`, `limit`, and `sort` from `req.validatedQuery` (or `req.query`), queries conversations owned by `req.userId`,
+ * maps the most recent message content to `lastMessage`, and sends a paginated JSON response.
  */
 export async function getConversations(req, res, next) {
   try {
@@ -59,8 +61,11 @@ export async function getConversations(req, res, next) {
 }
 
 /**
- * Get single conversation
- * GET /api/conversations/:id
+ * Retrieve a single conversation belonging to the authenticated user, including its messages.
+ *
+ * If the conversation exists and is owned by the requester, responds with HTTP 200 and the conversation
+ * object with its messages ordered by `createdAt` ascending. If no matching conversation is found,
+ * responds with HTTP 404 and an error payload.
  */
 export async function getConversation(req, res, next) {
   try {
@@ -95,8 +100,13 @@ export async function getConversation(req, res, next) {
 }
 
 /**
- * Create new conversation
- * POST /api/conversations
+ * Create a new conversation for the authenticated user.
+ *
+ * If `title` is not provided, assigns `New <mode> conversation`. Uses `mode` from the request and defaults it to `"chat"`.
+ * @param {import('express').Request} req - Express request; expects `req.userId` and `req.validated` containing optional `title` and optional `mode`.
+ * @param {import('express').Response} res - Express response.
+ * @param {Function} next - Express next middleware function.
+ * @returns {Object} The created conversation object.
  */
 export async function createConversation(req, res, next) {
   try {
@@ -118,8 +128,9 @@ export async function createConversation(req, res, next) {
 }
 
 /**
- * Update conversation (rename, update mode, etc)
- * PUT /api/conversations/:id
+ * Update the title (and other updatable fields) of a conversation owned by the authenticated user.
+ *
+ * If the conversation does not exist or does not belong to the user, responds with a 404 error; on success responds with the updated conversation and HTTP 200.
  */
 export async function updateConversation(req, res, next) {
   try {
@@ -151,8 +162,14 @@ export async function updateConversation(req, res, next) {
 }
 
 /**
- * Delete conversation
- * DELETE /api/conversations/:id
+ * Delete a conversation belonging to the authenticated user.
+ *
+ * Sends a 404 response when the conversation does not exist or is not owned by the user.
+ * Sends a 200 response with `{ id, deleted: true }` when deletion succeeds.
+ *
+ * @param {import('express').Request} req - Express request; expects authenticated `req.userId` and route param `id` (or `req.validatedParams.id`).
+ * @param {import('express').Response} res - Express response.
+ * @param {import('express').NextFunction} next - Express next function.
  */
 export async function deleteConversation(req, res, next) {
   try {
@@ -182,8 +199,9 @@ export async function deleteConversation(req, res, next) {
 }
 
 /**
- * Get conversation messages with pagination
- * GET /api/conversations/:id/messages
+ * Retrieve paginated messages for a user's conversation.
+ *
+ * Ensures the conversation identified by `req.validatedParams?.id || req.params.id` belongs to `req.userId`, then returns messages paginated by `page` and `limit` (taken from `req.validatedQuery || req.query`) and ordered by `sort`. Responds with HTTP 200 and a paginated payload on success, or HTTP 404 when the conversation is not found.
  */
 export async function getConversationMessages(req, res, next) {
   try {

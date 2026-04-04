@@ -1,8 +1,12 @@
 import chalk from "chalk";
 
 /**
- * Global error handler middleware
- * Catches all errors and returns standardized error response
+ * Standardized Express error-handling middleware that logs an error and sends a JSON error response.
+ * @param {Error|Object} err - Error object; may include `statusCode`, `status`, `code`, `name`, and `message`.
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ * @param {import('express').NextFunction} next - Express next middleware (unused).
+ * @returns {import('express').Response} The HTTP response containing a standardized error payload (`success`, `error`, `statusCode`, `timestamp`).
  */
 export function errorHandler(err, req, res, next) {
   // Log error
@@ -75,7 +79,11 @@ export function errorHandler(err, req, res, next) {
 }
 
 /**
- * 404 Not Found handler
+ * Send a standardized 404 JSON response for unmatched routes.
+ *
+ * @param {import('express').Request} req - Incoming request; `req.method` and `req.path` are used in the error message.
+ * @param {import('express').Response} res - Response object used to send the 404 payload.
+ * @returns {import('express').Response} The response containing `{ success: false, error: { code: "NOT_FOUND", message }, statusCode: 404, timestamp }`.
  */
 export function notFoundHandler(req, res) {
   return res.status(404).json({

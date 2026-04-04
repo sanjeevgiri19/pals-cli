@@ -18,6 +18,14 @@ interface ConversationSidebarProps {
   onCreateConversation: () => void;
 }
 
+/**
+ * Renders the conversations sidebar with controls to create, select, rename, and delete conversations.
+ *
+ * @param activeId - ID of the currently selected conversation, if any
+ * @param onSelectConversation - Called with a conversation ID when a conversation row is selected
+ * @param onCreateConversation - Called when the "New Chat" action is triggered
+ * @returns The sidebar JSX element that displays the conversations list, inline rename/edit controls, and footer with the conversation count
+ */
 export function ConversationSidebar({
   activeId,
   onSelectConversation,

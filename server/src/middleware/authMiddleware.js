@@ -1,8 +1,9 @@
 import prisma from "../lib/db.js";
 
 /**
- * Verify user is authenticated
- * Checks for valid session/token and extracts user
+ * Ensure the request is authenticated and attach the authenticated user to the request.
+ *
+ * Attempts to determine the current user in this order: an existing `req.user`, a `Bearer <token>` Authorization header that maps to a valid session (with an unexpired `expiresAt`), and `req.session.user`. If authentication succeeds, sets `req.userId` and ensures `req.user` exists, then calls `next()`. If no valid user is found, responds with HTTP 401 and a structured JSON error. Any unexpected errors are logged and also result in a 401 JSON response.
  */
 export async function authMiddleware(req, res, next) {
   try {
@@ -72,8 +73,14 @@ export async function authMiddleware(req, res, next) {
 }
 
 /**
- * Verify user owns the conversation
- * Must be called after authMiddleware
+ * Ensure the authenticated user owns the conversation referenced by the route parameter.
+ *
+ * Must run after authentication middleware; on success attaches the conversation to `req.conversation` and calls `next()`.
+ *
+ * Errors:
+ * - Responds with 400 if the conversation `id` route parameter or `req.userId` is missing.
+ * - Responds with 404 if no conversation matching the `id` and `req.userId` exists.
+ * - Logs the error and responds with 500 on unexpected failures.
  */
 export async function ownershipMiddleware(req, res, next) {
   try {

@@ -6,6 +6,13 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 
+/**
+ * Renders the top navigation bar with site links, a "Launch Chat" call-to-action, and a user-profile dropdown when an authenticated session user exists.
+ *
+ * The profile dropdown displays the user's image, name (falls back to "User"), and email; it closes when clicking outside the dropdown and the Logout button signs the user out and redirects to `/sign-in`.
+ *
+ * @returns The rendered navigation header element.
+ */
 export function Navbar() {
   const path = usePathname();
   const router = useRouter();

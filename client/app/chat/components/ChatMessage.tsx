@@ -13,6 +13,15 @@ interface ChatMessageProps {
   isStreaming?: boolean;
 }
 
+/**
+ * Renders a single chat message bubble with Markdown rendering, optional "Thinking..." streaming UI, timestamp, avatar initial, and conditional code-copy support.
+ *
+ * Renders the message content as HTML from Markdown; when `isStreaming` is true it shows a pulsing "Thinking..." indicator instead of the rendered content. For non-user messages whose rendered HTML contains code blocks, a copy button is shown that writes the original message text to the clipboard and shows a check icon for 2 seconds after copying.
+ *
+ * @param message - The message object to render. Expected fields include `role`, `content`, and `createdAt`. For user messages an optional `userId` may be used to derive the avatar initial.
+ * @param isStreaming - When true, shows the streaming/thinking UI instead of rendered Markdown.
+ * @returns The JSX element for the chat message bubble.
+ */
 export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const [copiedContent, setCopiedContent] = useState<string | null>(null);
   const isUser = message.role === "user";
