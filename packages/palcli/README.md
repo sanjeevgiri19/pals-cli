@@ -43,6 +43,17 @@ npm publish
 
 **Private package (invite-only):** use an npm org private package or GitHub Packages; add collaborators in npm UI.
 
+## Device login and `localhost:3000`
+
+`palcli login` opens the **web app** URL (usually `http://localhost:3000/device?...`) so you can enter the device code. That page is **Next.js** (`client/`), not Express. If Edge shows **connection refused**, start the client:
+
+```bash
+cd client
+npm run dev
+```
+
+Keep the **API** running on port 3005 (`cd server && npm run dev`) and set the client’s API base URL (e.g. `NEXT_PUBLIC_*` / `auth-client` `baseURL`) to match.
+
 ## End-user commands
 
 ```bash

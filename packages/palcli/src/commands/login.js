@@ -158,6 +158,14 @@ export async function loginAction(opts) {
     );
     console.log(chalk.white("Code: ") + chalk.bold.green(user_code));
     console.log("");
+    const verifyUrl = verification_uri_complete || verification_uri;
+    if (typeof verifyUrl === "string" && verifyUrl.includes("localhost:3000")) {
+      console.log(
+        chalk.yellow(
+          "Tip: this URL is served by the Next.js app, not the API. If the browser says connection refused, run:\n  cd client && npm run dev\n",
+        ),
+      );
+    }
 
     const shouldOpen = await confirm({
       message: "Open browser automatically?",
