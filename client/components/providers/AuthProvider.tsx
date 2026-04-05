@@ -15,33 +15,35 @@ import { useAuthStore } from "@/stores/useAuthStore";
 export function AuthProvider({ children }: { children: ReactNode }) {
   const setAuthState = useAuthStore((state) => state.setAuthState);
 
-  useEffect(() => {
-    const initAuth = async () => {
-      try {
-        const session = await authClient.getSession();
-        if (session?.session && session?.user) {
-          // Sync better-auth session to Zustand
-          setAuthState(
-            {
-              token: session?.session.token,
-              expiresAt: session.session.expiresAt,
-              createdAt: session.session.createdAt,
-              updatedAt: session.session.updatedAt,
-              ipAddress: session.session.ipAddress,
-              userAgent: session.session.userAgent,
-              userId: session.session.userId,
-              id: session.session.id,
-            },
-            session.user,
-          );
-        }
-      } catch (error) {
-        console.error("Failed to initialize auth:", error);
-      }
-    };
+  // Use the reactive hook provided by better-auth to read session data
+  const { data: sessionData, isPending } = authClient.useSession();
 
-    initAuth();
-  }, [setAuthState]);
+  useEffect(() => {
+    if (isPending) return;
+
+    try {
+      if (sessionData?.session && sessionData?.user) {
+        setAuthState(
+          {
+            token: sessionData.session.token,
+            expiresAt: sessionData.session.expiresAt,
+            createdAt: sessionData.session.createdAt,
+            updatedAt: sessionData.session.updatedAt,
+            ipAddress: sessionData.session.ipAddress,
+            userAgent: sessionData.session.userAgent,
+            userId: sessionData.session.userId,
+            id: sessionData.session.id,
+          },
+          sessionData.user,
+        );
+      } else {
+        // If there's no active session, clear the store
+        setAuthState(null, null);
+      }
+    } catch (error) {
+      console.error("Failed to initialize auth:", error);
+    }
+  }, [isPending, sessionData, setAuthState]);
 
   return children;
 }

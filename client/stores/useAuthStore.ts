@@ -2,10 +2,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface Session {
-  expiresAt: string;
+  expiresAt: Date;
   token: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   ipAddress: string;
   userAgent: string;
   userId: string;

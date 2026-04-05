@@ -1,6 +1,6 @@
 "use client";
 
-import { marked } from "marked";
+import { Marked, marked } from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import { Message } from "@/lib/api/conversations";
@@ -26,23 +26,29 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const [copiedContent, setCopiedContent] = useState<string | null>(null);
   const isUser = message.role === "user";
 
-  const authorInitial =
-    message.role === "user" ? (message as any).userId?.[0] || "U" : "A";
+  const authorInitial = isUser ? "Y" : "A";
 
   // Configure marked with syntax highlighting
-  marked.setOptions({
-    highlight: (code, lang) => {
+  // Create a small renderer for code blocks that uses highlight.js
+  const renderer: Partial<Marked.Renderer> = {
+    code(code: string, infostring?: string) {
+      const lang = (infostring || "").trim();
       try {
-        return hljs.highlight(code, { language: lang || "plaintext" }).value;
+        if (lang) {
+          const highlighted = hljs.highlight(code, { language: lang }).value;
+          return `<pre class="hljs"><code>${highlighted}</code></pre>`;
+        }
+        const auto = hljs.highlightAuto(code).value;
+        return `<pre class="hljs"><code>${auto}</code></pre>`;
       } catch {
-        return code;
+        return `<pre class="hljs"><code>${code}</code></pre>`;
       }
     },
-    breaks: true,
-    gfm: true,
-  });
+  };
 
-  const htmlContent = marked(message.content) as string;
+  marked.use({ renderer, gfm: true, breaks: true });
+
+  const htmlContent = marked.parse(message.content);
 
   const handleCopy = async (text: string) => {
     await navigator.clipboard.writeText(text);
