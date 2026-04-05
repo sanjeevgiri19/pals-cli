@@ -5,6 +5,13 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+/**
+ * Render the landing page UI and redirect unauthenticated users to the sign-in page.
+ *
+ * Renders a centered loading spinner while session state is pending. If no session or user is present, triggers a client-side navigation to "/sign-in". Otherwise renders the public homepage with hero content and navigation links.
+ *
+ * @returns The React element for the homepage.
+ */
 export default function HomePage() {
   const { data, isPending } = authClient.useSession();
   const router = useRouter();

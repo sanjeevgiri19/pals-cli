@@ -13,6 +13,15 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Provides a shared React Query client to the wrapped component subtree.
+ *
+ * The provider supplies a module-scoped `QueryClient` configured with conservative defaults
+ * (no refetch on window focus or mount, and a single retry).
+ *
+ * @param children - The React tree to render within the QueryClientProvider
+ * @returns The `children` wrapped with a `QueryClientProvider` that supplies the shared `queryClient`
+ */
 export function QueryProvider({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

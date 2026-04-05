@@ -7,10 +7,17 @@ const chatService = new ChatService();
 const aiService = new AIService();
 
 /**
- * Send message and get AI response
- * POST /api/conversations/:id/messages
+ * Create a user message for a conversation and produce an assistant reply via the AI service, supporting both immediate JSON responses and Server-Sent Events streaming.
  *
- * Supports both regular response and streaming response
+ * Validates that `content` is non-empty, verifies the conversation belongs to the authenticated user, persists the user message, and then:
+ * - If streaming is requested (`req.body.stream === true` or `Accept: text/event-stream`), delegates to the streaming handler which streams incremental AI chunks, persists the final assistant message, and emits completion/error events.
+ * - Otherwise, loads conversation history, requests a full AI response, persists the assistant message, updates the conversation's `updatedAt`, and returns both stored messages with HTTP 201.
+ *
+ * On AI generation failure in the non-streaming flow, deletes the previously created user message and forwards the error to `next`.
+ *
+ * @param {import('express').Request} req - Express request; expects `req.userId` (authenticated user), `req.validatedParams?.id || req.params.id` (conversation id), and `req.body` containing `content` (string), optional `role` (ignored for persistence), and optional `stream` (boolean).
+ * @param {import('express').Response} res - Express response.
+ * @param {import('express').NextFunction} next - Express next middleware for error forwarding.
  */
 export async function sendMessage(req, res, next) {
   try {
@@ -115,7 +122,15 @@ export async function sendMessage(req, res, next) {
 }
 
 /**
- * Handle streaming response via Server-Sent Events (SSE)
+ * Stream AI-generated assistant content to the client over Server-Sent Events (SSE), persist the final assistant message, and update the conversation's timestamp.
+ *
+ * Emits SSE events:
+ * - `message_chunk` for each incremental content chunk with payload `{ chunk }`.
+ * - `message_complete` when streaming finishes with payload `{ messageId, totalTokens }`.
+ * - `error` if streaming fails with payload `{ message }`.
+ *
+ * @param {string} conversationId - ID of the conversation to which the assistant message will belong.
+ * @param {Object} userMessage - The previously persisted user message object; must include `id` so it can be deleted if streaming fails.
  */
 async function handleStreamingResponse(
   req,
@@ -197,8 +212,12 @@ async function handleStreamingResponse(
 }
 
 /**
- * Delete a message
- * DELETE /api/messages/:id
+ * Deletes a message by id if it belongs to the authenticated user.
+ *
+ * Sends HTTP responses:
+ * - 200 with { id, deleted: true } when deletion succeeds.
+ * - 404 if the message does not exist.
+ * - 403 if the message exists but the conversation is not owned by the authenticated user.
  */
 export async function deleteMessage(req, res, next) {
   try {
@@ -245,8 +264,12 @@ export async function deleteMessage(req, res, next) {
 }
 
 /**
- * Get a single message
- * GET /api/messages/:id
+ * Retrieve a single message by ID if it belongs to the authenticated user.
+ *
+ * Responds with HTTP 200 and the message object (conversation field omitted) when found
+ * and owned by the requester. Responds with HTTP 404 if the message does not exist,
+ * HTTP 403 if the message exists but belongs to a different user, and forwards other
+ * errors to the next middleware.
  */
 export async function getMessage(req, res, next) {
   try {

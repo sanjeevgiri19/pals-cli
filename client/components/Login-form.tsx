@@ -8,6 +8,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
+/**
+ * Render a login form that provides a GitHub social sign-in action.
+ *
+ * The UI includes a logo, heading, subtitle, and a full-width "Continue With GitHub" button;
+ * clicking the button initiates a GitHub social sign-in via `authClient` using the callback URL `http://localhost:3000`.
+ *
+ * @returns The login form as a JSX element
+ */
 export function LoginForm() {
   const router = useRouter();
   // const [isLoading, setIsLoading] = useState(false);

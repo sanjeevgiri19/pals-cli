@@ -1,3 +1,10 @@
+/**
+ * Render the About / FAQs page containing usage instructions and troubleshooting guidance.
+ *
+ * Includes three sections: "How to use the web chat" (step-by-step usage), "How to use the CLI" (example commands), and "Troubleshooting" (sign-in and network check advice).
+ *
+ * @returns A JSX element containing the About / FAQs layout
+ */
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto p-8">

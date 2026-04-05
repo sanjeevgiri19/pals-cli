@@ -20,6 +20,13 @@ import { useAuthStore } from "@/stores/useAuthStore";
 
 type ChatMode = "chat" | "tool" | "agent";
 
+/**
+ * Renders the authenticated chat page with a collapsible conversation sidebar, message list, and message input.
+ *
+ * The component enforces authentication (redirecting to /sign-in when unauthenticated), loads conversations and messages for the active conversation, auto-selects the first conversation when none is selected, and provides handlers to create conversations, send messages, and sign out.
+ *
+ * @returns The rendered chat page element.
+ */
 export default function ChatPage() {
   const router = useRouter();
   const { user, session, isPending } = useSyncAuth(); // Use sync hook instead
