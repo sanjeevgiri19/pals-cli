@@ -1,0 +1,38 @@
+{
+  "name": "palcli",
+  "version": "1.0.0",
+  "description": "Thin CLI for PAL — talks to your hosted PAL API (no local database).",
+  "type": "module",
+  "main": "./src/main.js",
+  "bin": {
+    "palcli": "./bin/palcli.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "pal-cli",
+    "cli",
+    "ai",
+    "chat"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "better-auth": "^1.5.6",
+    "boxen": "^8.0.1",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "figlet": "^1.11.0",
+    "marked": "^15.0.12",
+    "marked-terminal": "^7.3.0",
+    "open": "^11.0.0",
+    "yocto-spinner": "^1.1.0",
+    "zod": "^4.3.6"
+  }
+}

@@ -5,6 +5,7 @@ import cors from "cors";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import conversationRoutes from "./routes/conversations.js";
 import messageRoutes from "./routes/messages.js";
+import meRoutes from "./routes/me.js";
 
 const app = express();
 const port = process.env.PORT || 3005;
@@ -22,6 +23,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
 
 // Register API routes
+app.use("/api/me", meRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);
 
@@ -70,13 +72,17 @@ app.use("/api/messages", messageRoutes);
 //   }
 // });
 
+const clientAppUrl = (
+  process.env.CLIENT_APP_URL || "http://localhost:3000"
+).replace(/\/$/, "");
+
 app.get("/device", async (req, res) => {
   try {
-    const { user_code } = req.query; // Fixed: should be req.query, not req.params
+    const { user_code } = req.query;
     if (!user_code) {
       return res.status(400).json({ error: "user_code is required" });
     }
-    res.redirect(`http://localhost:3000/device?user_code=${user_code}`);
+    res.redirect(`${clientAppUrl}/device?user_code=${encodeURIComponent(user_code)}`);
   } catch (error) {
     console.error("Device redirect error:", error);
     res.status(500).json({ error: "Redirect failed", details: error.message });
