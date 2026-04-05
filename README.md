@@ -39,6 +39,24 @@ cd pal-cli
 
 There are two main workspaces: `server/` and `client/`.
 
+Folder map (what’s in the repo and how it relates to the app)
+- `client/` — the web application (Next.js):
+  - `app/` — pages and the chat UI. Users interact with pages here (`/chat`, `/device`, `/approve`, `/about`, sign-in routes).
+  - `components/` and `app/chat/components/` — UI building blocks: conversation sidebar, message list, message input, chat message renderer.
+  - `hooks/` — client-side hooks for conversations and messages.
+  - `lib/` and `api/` — client-side helpers and API client utilities used to call the backend.
+
+- `server/` — backend server, CLI, chat agents and APIs:
+  - `src/index.js` — HTTP server entry (runs API endpoints).
+  - `src/cli/main.js` — CLI entrypoint (palCLI command behavior lives here).
+  - `src/commands/` — CLI subcommands (auth helpers, agent wakers, etc.). These are the actions operators run from the terminal.
+  - `src/chat/` — agent orchestration scripts that show how chat flows combine tools + models.
+  - `src/routes/` — API routes that the web client calls (conversations, messages).
+  - `src/controllers/` & `src/service/` — higher-level request handling and service logic (the non-UI logic behind responses).
+  - `src/lib/` and `src/middleware/` — auth helpers, database helpers, and request middleware for authorization and validation.
+
+- `server/prisma/` — Prisma schema and migrations (database model definitions and migration history).
+
 ## Install dependencies
 
 From the project root you can install both sides separately.
