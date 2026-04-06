@@ -13,8 +13,7 @@ export async function exportAsPDF(
   messages: Message[],
 ): Promise<void> {
   // Dynamically import html2pdf to avoid bundle size issues
-  const { default: html2pdf } = await import("html2pdf.js");
-
+const html2pdf = (await import("html2pdf.js")).default as any;
   // Generate HTML content
   const htmlContent = generateConversationHTML(conversation, messages);
 

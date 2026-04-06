@@ -30,7 +30,7 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
 
   // Configure marked with syntax highlighting
   // Create a small renderer for code blocks that uses highlight.js
-  const renderer: Partial<Marked.Renderer> = {
+  const renderer: any = {
     code(code: string, infostring?: string) {
       const lang = (infostring || "").trim();
       try {
@@ -48,7 +48,7 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
 
   marked.use({ renderer, gfm: true, breaks: true });
 
-  const htmlContent = marked.parse(message.content);
+  const htmlContent = marked.parse(message.content) as string;
 
   const handleCopy = async (text: string) => {
     await navigator.clipboard.writeText(text);
