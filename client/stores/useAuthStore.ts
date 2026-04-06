@@ -6,19 +6,19 @@ export interface Session {
   token: string;
   createdAt: Date;
   updatedAt: Date;
-  ipAddress: string;
-  userAgent: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
   userId: string;
   id: string;
 }
 
 export interface User {
-  name: string;
+  name?: string | null;
   email: string;
   emailVerified: boolean;
-  image: string;
-  createdAt: string;
-  updatedAt: string;
+  image?: string | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
   id: string;
 }
 
