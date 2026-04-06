@@ -54,7 +54,7 @@ export function Navbar() {
           {/* LEFT */}
           <div className="flex items-center gap-4">
             <Link href="/" className="text-lg font-semibold">
-              PAL CLI
+              PALs CLI
             </Link>
 
             <div className="hidden md:flex items-center gap-2">

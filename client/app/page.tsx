@@ -37,7 +37,7 @@ export default function HomePage() {
     <div className="max-w-6xl mx-auto p-8">
       <section className="text-center py-24">
         <h1 className="text-4xl font-bold mb-4">
-          PAL CLI — AI Assistant for Devs
+          PALs CLI — AI Assistant for Devs
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Chat with AI, run developer tools, or use the CLI to integrate PAL
