@@ -144,7 +144,7 @@ export async function runChatSession(baseUrl, mode = "chat") {
 }
 
 export async function startChatFromCli() {
-  intro(boxen(chalk.bold.cyan("PAL CLI chat"), { padding: 1, borderStyle: "double" }));
+  intro(boxen(chalk.bold.cyan("PALS CLI chat"), { padding: 1, borderStyle: "double" }));
   try {
     await runChatSession(getApiUrl(), "chat");
   } catch (e) {

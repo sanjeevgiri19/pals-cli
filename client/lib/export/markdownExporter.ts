@@ -64,7 +64,7 @@ export function exportAsMarkdown(
 
   // Footer
   lines.push("---");
-  lines.push(`*Exported on ${new Date().toLocaleString()} using PAL CLI*`);
+  lines.push(`*Exported on ${new Date().toLocaleString()} using PALS CLI*`);
 
   return lines.join("\n");
 }

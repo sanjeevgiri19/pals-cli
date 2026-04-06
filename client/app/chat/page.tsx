@@ -149,7 +149,7 @@ export default function ChatPage() {
             </Button>
             <div className="flex-1">
               <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                PAL CLI Chat
+                PALs CLI Chat
               </h1>
               <p className="text-xs text-gray-500">Welcome, {user?.name}</p>
             </div>
