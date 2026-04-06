@@ -62,7 +62,7 @@ export default function HomePage() {
         <div className="p-6 border rounded-lg">
           <h3 className="font-semibold mb-2">CLI</h3>
           <p className="text-sm text-gray-500">
-            Use `palcli` to run commands locally and integrate AI into
+            Use `palscli` to run commands locally and integrate AI into
             pipelines.
           </p>
         </div>

@@ -23,7 +23,7 @@ async function main() {
 
   console.log(chalk.gray("A cli based AI tool \n"));
 
-  const program = new Command("palCLI");
+  const program = new Command("palscli");
 
   program
     .version("0.0.1")

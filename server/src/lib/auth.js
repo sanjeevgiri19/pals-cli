@@ -3,13 +3,26 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./db.js";
 import { deviceAuthorization } from "better-auth/plugins";
 
+const apiBase = (
+  process.env.BETTER_AUTH_URL ||
+  process.env.API_PUBLIC_URL ||
+  "https://pal-cli.onrender.com"
+  // "http://localhost:3005"
+).replace(/\/$/, "");
+
+const trustedOrigins = process.env.TRUSTED_ORIGINS
+  ? process.env.TRUSTED_ORIGINS.split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+  : ["http://localhost:3000"];
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  baseURL: "http://localhost:3005",
+  baseURL: apiBase,
   basePath: "/api/auth",
-  trustedOrigins: ["http://localhost:3000"],
+  trustedOrigins,
   plugins: [
     deviceAuthorization({
       verificationUri: "/device",
@@ -19,7 +32,9 @@ export const auth = betterAuth({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      redirectURI: "http://localhost:3005/api/auth/callback/github",
+      redirectURI:
+        process.env.GITHUB_REDIRECT_URI ||
+        `${apiBase}/api/auth/callback/github`,
     },
   },
 });

@@ -16,7 +16,8 @@ import { clearStoredToken, getStoredToken, isTokenExpired, storeToken } from "..
 
 dotenv.config();
 
-const URL = "http://localhost:3005";
+// const URL = "http://localhost:3005";
+const URL = "https://pal-cli.onrender.com";
 
 export const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 export const CONFIG_DIR = path.join(os.homedir(), ".better-auth");
@@ -27,7 +28,7 @@ export async function requireAuth() {
 
   if (!token) {
     console.log(
-      chalk.red("Not authenticated. Please run 'palCLI login' first."),
+      chalk.red("Not authenticated. Please run 'palscli login' first."),
     );
     process.exit(1);
   }
@@ -36,7 +37,7 @@ export async function requireAuth() {
     console.log(
       chalk.yellow("⚠️  Your session has expired. Please login again."),
     );
-    console.log(chalk.gray("   Run: PalCLI login\n"));
+    console.log(chalk.gray("   Run: palscli login\n"));
     process.exit(1);
   }
 
