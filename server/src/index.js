@@ -12,7 +12,7 @@ const port = process.env.PORT || 3005;
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", process.env.CORS_ORIGIN || "https://pals-cli.vercel.app"],
+    origin: ["http://localhost:3000", process.env.CLIENT_APP_URL || "https://pals-cli.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),

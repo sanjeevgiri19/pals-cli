@@ -51,7 +51,7 @@ export function LoginForm() {
                 onClick={() =>
                   authClient.signIn.social({
                     provider: "github",
-                    callbackURL: "https://pals-cli.vercel.app", //this is required, if not then app tries to redirect to localhost:3000 and shows error
+                    callbackURL: process.env.NEXT_FRONTEND_APP_URL || "https://pals-cli.vercel.app/", //this is required, if not then app tries to redirect to localhost:3000 and shows error
                   })
                 }
               >
