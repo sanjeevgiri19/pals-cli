@@ -1,3 +1,4 @@
+import "dotenv/config.js";
 import express from "express";
 import { auth } from "./lib/auth.js";
 import { toNodeHandler } from "better-auth/node";
@@ -8,6 +9,7 @@ import messageRoutes from "./routes/messages.js";
 import meRoutes from "./routes/me.js";
 
 const app = express();
+app.set("trust proxy", 1);
 const port = process.env.PORT || 3005;
 const trimTrailingSlash = (url) => url.replace(/\/$/, "");
 const clientAppUrl = trimTrailingSlash(
@@ -15,7 +17,7 @@ const clientAppUrl = trimTrailingSlash(
 );
 
 const configuredOrigins = [
-  process.env.CORS_ORIGIN,
+  process.env.CORS_ORIGIN || "http://localhost:3000",
   clientAppUrl,
   ...(process.env.TRUSTED_ORIGINS
     ? process.env.TRUSTED_ORIGINS.split(",").map((s) => s.trim())

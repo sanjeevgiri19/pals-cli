@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 export function LoginForm() {
   const router = useRouter();
   const callbackURL =
-    process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+    process.env.NEXT_PUBLIC_API_URL || window.location.origin;
   // const [isLoading, setIsLoading] = useState(false)
 
   // const onLogin = async () => {

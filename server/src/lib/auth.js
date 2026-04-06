@@ -27,6 +27,15 @@ export const auth = betterAuth({
   baseURL: normalizedApiBase,
   basePath: "/api/auth",
   trustedOrigins,
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
+  },
+  account: {
+    skipStateCookieCheck: true,
+  },
   plugins: [
     deviceAuthorization({
       verificationUri: "/device",
