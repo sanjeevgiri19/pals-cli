@@ -12,8 +12,7 @@ const port = process.env.PORT || 3005;
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "https://pals-cli.vercel.app/",
-    // "http://localhost:3000",
+    origin: ["http://localhost:3000", process.env.CORS_ORIGIN || "https://pals-cli.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
@@ -73,8 +72,7 @@ app.use("/api/messages", messageRoutes);
 // });
 
 const clientAppUrl = (
-  process.env.CLIENT_APP_URL || "https://pals-cli.vercel.app/"
-  // "http://localhost:3000"
+  process.env.CLIENT_APP_URL || "https://pals-cli.vercel.app"
 ).replace(/\/$/, "");
 
 app.get("/device", async (req, res) => {

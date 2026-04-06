@@ -9,7 +9,7 @@ import { startChatFromCli } from "./commands/chat-session.js";
 async function main() {
   console.log(
     chalk.cyan(
-      figlet.textSync("PAL CLI", {
+      figlet.textSync("PALs CLI", {
         font: "Standard",
         horizontalLayout: "default",
       }),
@@ -22,7 +22,7 @@ async function main() {
   program
     .name("palscli")
     .version("1.0.2")
-    .description("PAL command-line client (hosted API)");
+    .description("PALs command-line client (hosted API)");
 
   program
     .command("chat")
