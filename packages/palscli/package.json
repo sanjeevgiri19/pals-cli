@@ -1,6 +1,6 @@
 {
   "name": "palscli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Thin CLI for PAL — talks to your hosted PAL API (no local database).",
   "type": "module",
   "main": "./src/main.js",

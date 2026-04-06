@@ -16,7 +16,8 @@ import { clearStoredToken, getStoredToken, isTokenExpired, storeToken } from "..
 
 dotenv.config();
 
-const URL = "http://localhost:3005";
+// const URL = "http://localhost:3005";
+const URL = "https://pal-cli.onrender.com";
 
 export const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 export const CONFIG_DIR = path.join(os.homedir(), ".better-auth");

@@ -6,7 +6,8 @@ import { deviceAuthorization } from "better-auth/plugins";
 const apiBase = (
   process.env.BETTER_AUTH_URL ||
   process.env.API_PUBLIC_URL ||
-  "http://localhost:3005"
+  "https://pal-cli.onrender.com"
+  // "http://localhost:3005"
 ).replace(/\/$/, "");
 
 const trustedOrigins = process.env.TRUSTED_ORIGINS
