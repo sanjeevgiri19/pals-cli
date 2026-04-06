@@ -14,7 +14,7 @@ const trustedOrigins = process.env.TRUSTED_ORIGINS
   ? process.env.TRUSTED_ORIGINS.split(",")
       .map((s) => s.trim())
       .filter(Boolean)
-  : ["http://localhost:3000"];
+  : ["http://localhost:3000", "https://pals-cli.vercel.app"];
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {

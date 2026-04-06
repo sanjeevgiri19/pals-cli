@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
@@ -16,18 +17,22 @@ export default function HomePage() {
   const { data, isPending } = authClient.useSession();
   const router = useRouter();
 
-  if (isPending) {
+
+
+  
+  useEffect(() => {
+    if (!isPending && !data?.session && !data?.user) {
+      router.push("/sign-in");
+    }
+  }, [data, isPending, router]);
+
+    if (isPending) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
         <Spinner />
       </div>
     );
   }
-
-  // if (!data?.session && !data?.user) {
-  //   router.push("/sign-in");
-  // }
-
   return (
     <div className="max-w-6xl mx-auto p-8">
       <section className="text-center py-24">
