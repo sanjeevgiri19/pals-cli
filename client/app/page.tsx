@@ -24,9 +24,9 @@ export default function HomePage() {
     );
   }
 
-  if (!data?.session && !data?.user) {
-    router.push("/sign-in");
-  }
+  // if (!data?.session && !data?.user) {
+  //   router.push("/sign-in");
+  // }
 
   return (
     <div className="max-w-6xl mx-auto p-8">
