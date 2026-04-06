@@ -1,6 +1,6 @@
 import express from "express";
 import { auth } from "./lib/auth.js";
-import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
+import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import conversationRoutes from "./routes/conversations.js";
@@ -9,10 +9,31 @@ import meRoutes from "./routes/me.js";
 
 const app = express();
 const port = process.env.PORT || 3005;
+const trimTrailingSlash = (url) => url.replace(/\/$/, "");
+const clientAppUrl = trimTrailingSlash(
+  process.env.CLIENT_APP_URL || "http://localhost:3000",
+);
+
+const configuredOrigins = [
+  process.env.CORS_ORIGIN,
+  clientAppUrl,
+  ...(process.env.TRUSTED_ORIGINS
+    ? process.env.TRUSTED_ORIGINS.split(",").map((s) => s.trim())
+    : []),
+]
+  .filter(Boolean)
+  .map(trimTrailingSlash);
+const allowedOrigins = new Set(configuredOrigins);
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", process.env.CLIENT_APP_URL || "https://pals-cli.vercel.app"],
+    origin(origin, callback) {
+      // Allow CLI / server-to-server requests without Origin.
+      if (!origin) return callback(null, true);
+      const normalized = trimTrailingSlash(origin);
+      if (allowedOrigins.has(normalized)) return callback(null, true);
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
@@ -71,10 +92,6 @@ app.use("/api/messages", messageRoutes);
 //   }
 // });
 
-const clientAppUrl = (
-  process.env.CLIENT_APP_URL || "https://pals-cli.vercel.app"
-).replace(/\/$/, "");
-
 app.get("/device", async (req, res) => {
   try {
     const { user_code } = req.query;
@@ -93,12 +110,6 @@ app.use(notFoundHandler);
 
 // Global error handler (must be last)
 app.use(errorHandler);
-
-// Root handler for oauth redirects and fallback
-app.get("/", (req, res) => {
-  const query = req.url.split("?")[1];
-  res.redirect(`${clientAppUrl}${query ? `?${query}` : ""}`);
-});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -18,6 +18,8 @@ import { useRouter } from "next/navigation";
  */
 export function LoginForm() {
   const router = useRouter();
+  const callbackURL =
+    process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
   // const [isLoading, setIsLoading] = useState(false)
 
   // const onLogin = async () => {
@@ -51,7 +53,7 @@ export function LoginForm() {
                 onClick={() =>
                   authClient.signIn.social({
                     provider: "github",
-                    callbackURL: process.env.NEXT_FRONTEND_APP_URL || "https://pals-cli.vercel.app/", //this is required, if not then app tries to redirect to localhost:3000 and shows error
+                    callbackURL,
                   })
                 }
               >
