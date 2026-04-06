@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle, XCircle, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,8 +33,14 @@ export default function DeviceApprovalContent() {
     );
   }
 
+
+  useEffect(() => {
+    if (!isPending && !data?.session && !data?.user) {
+      router.push("/sign-in");
+    }
+  }, [data, isPending, router]);
+
   if (!data?.session && !data?.user) {
-    router.push("/sign-in");
     return null;
   }
 

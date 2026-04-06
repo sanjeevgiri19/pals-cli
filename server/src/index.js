@@ -94,6 +94,12 @@ app.use(notFoundHandler);
 // Global error handler (must be last)
 app.use(errorHandler);
 
+// Root handler for oauth redirects and fallback
+app.get("/", (req, res) => {
+  const query = req.url.split("?")[1];
+  res.redirect(`${clientAppUrl}${query ? `?${query}` : ""}`);
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

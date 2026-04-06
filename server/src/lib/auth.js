@@ -14,7 +14,7 @@ const trustedOrigins = process.env.TRUSTED_ORIGINS
   ? process.env.TRUSTED_ORIGINS.split(",")
       .map((s) => s.trim())
       .filter(Boolean)
-  : ["http://localhost:3000", "https://pals-cli.vercel.app"];
+  : ["http://localhost:3000", "https://pals-cli.vercel.app", "https://pal-cli.onrender.com"];
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -37,4 +37,11 @@ export const auth = betterAuth({
         `${apiBase}/api/auth/callback/github`,
     },
   },
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      partitioned: true // required by new browsers
+    }
+  }
 });
