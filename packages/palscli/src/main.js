@@ -17,11 +17,11 @@ async function main() {
   );
   console.log(chalk.gray("Thin client — your API holds secrets & data.\n"));
 
-  const program = new Command("palcli");
+  const program = new Command("palscli");
 
   program
-    .name("palcli")
-    .version("1.0.0")
+    .name("palscli")
+    .version("1.0.2")
     .description("PAL command-line client (hosted API)");
 
   program
@@ -42,6 +42,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(chalk.red("palcli error:"), err);
+  console.error(chalk.red("palscli error:"), err);
   process.exit(1);
 });

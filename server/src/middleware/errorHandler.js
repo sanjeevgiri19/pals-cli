@@ -8,6 +8,7 @@ import chalk from "chalk";
  * @param {import('express').NextFunction} next - Express next middleware (unused).
  * @returns {import('express').Response} The HTTP response containing a standardized error payload (`success`, `error`, `statusCode`, `timestamp`).
  */
+
 export function errorHandler(err, req, res, next) {
   // Log error
   console.error(chalk.red("\n❌ ERROR:"), {

@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import os from "os";
 
-const CONFIG_DIR = path.join(os.homedir(), ".palcli");
+const CONFIG_DIR = path.join(os.homedir(), ".palscli");
 const TOKEN_FILE = path.join(CONFIG_DIR, "credentials.json");
 
 export async function getStoredToken() {

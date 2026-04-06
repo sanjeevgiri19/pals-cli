@@ -7,4 +7,5 @@
 
 export const PUBLISH_API_URL = "http://localhost:3005";
 
-export const PUBLISH_GITHUB_CLIENT_ID = "";
+export const PUBLISH_GITHUB_CLIENT_ID = "Ov23lidEB9IMI5wCN9Nq";
+

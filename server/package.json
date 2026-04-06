@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "bin": {
-    "palCLI": "./src/cli/main.js"
+    "palscli": "./src/cli/main.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

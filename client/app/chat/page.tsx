@@ -13,6 +13,7 @@ import { ConversationSidebar } from "./components/ConversationSidebar";
 import { MessageList } from "./components/MessageList";
 import { MessageInput } from "./components/MessageInput";
 import { Button } from "@/components/ui/button";
+import { ExportButton } from "@/components/ExportButton";
 import { LogOut, Menu } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
@@ -75,7 +76,6 @@ export default function ChatPage() {
     } catch (error) {
       toast.error("Failed to create conversation");
       console.log("err", error);
-      
     }
   };
 
@@ -96,7 +96,6 @@ export default function ChatPage() {
     } catch (error) {
       toast.error("Failed to send message");
       console.log("err", error);
-      
     } finally {
       setIsStreaming(false);
     }
@@ -156,10 +155,23 @@ export default function ChatPage() {
             </div>
           </div>
 
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            {activeConversationId && conversationsData?.data && (
+              <ExportButton
+                conversation={
+                  conversationsData.data.find(
+                    (c) => c.id === activeConversationId,
+                  ) || conversationsData.data[0]
+                }
+                messages={messages}
+                disabled={!activeConversationId || messages.length === 0}
+              />
+            )}
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Messages Area */}

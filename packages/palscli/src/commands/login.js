@@ -33,7 +33,7 @@ async function pollForToken(authClient, deviceCode, clientId, initialInterval) {
           device_code: deviceCode,
           client_id: clientId,
           fetchOptions: {
-            headers: { "user-agent": "palcli" },
+            headers: { "user-agent": "palscli" },
           },
         });
 
@@ -95,7 +95,7 @@ export async function loginAction(opts) {
   if (!clientId) {
     console.log(
       chalk.red(
-        "GitHub OAuth Client ID is not configured.\nThe package maintainer must set PUBLISH_GITHUB_CLIENT_ID in src/publish-config.js before publish,\nor set PALCLI_GITHUB_CLIENT_ID for local use.",
+        "GitHub OAuth Client ID is not configured.\nThe package maintainer must set PUBLISH_GITHUB_CLIENT_ID in src/publish-config.js before publish,\nor set PALSCLI_GITHUB_CLIENT_ID for local use.",
       ),
     );
     process.exit(1);

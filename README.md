@@ -10,7 +10,7 @@ PAL CLI provides an interactive chat experience (web + CLI), integrates with ext
 
 - A developer-focused AI assistant combining:
   - A browser-based chat interface (Next.js + React) with conversations, messages, and streaming support.
-  - A command-line client (`palcli`) to run assistant commands from your terminal.
+  - A command-line client (`palscli`) to run assistant commands from your terminal.
   - A backend API (Express + Prisma) that stores conversations and messages and connects to auth providers.
 
 ## Features
@@ -33,8 +33,8 @@ PAL CLI provides an interactive chat experience (web + CLI), integrates with ext
 ## Getting started — Clone
 
 ```bash
-git clone https://github.com/sanjeevgiri19/pal-cli.git
-cd pal-cli
+git clone https://github.com/sanjeevgiri19/palscli.git
+cd palscli
 ```
 
 There are two main workspaces: `server/` and `client/`.
@@ -48,7 +48,7 @@ Folder map (what’s in the repo and how it relates to the app)
 
 - `server/` — backend server, CLI, chat agents and APIs:
   - `src/index.js` — HTTP server entry (runs API endpoints).
-  - `src/cli/main.js` — CLI entrypoint (palCLI command behavior lives here).
+  - `src/cli/main.js` — CLI entrypoint (palscli command behavior lives here).
   - `src/commands/` — CLI subcommands (auth helpers, agent wakers, etc.). These are the actions operators run from the terminal.
   - `src/chat/` — agent orchestration scripts that show how chat flows combine tools + models.
   - `src/routes/` — API routes that the web client calls (conversations, messages).
@@ -80,7 +80,7 @@ Server (`server/.env`) example:
 ```
 # Server - example
 PORT=3005
-DATABASE_URL=postgresql://user:password@localhost:5432/palcli
+DATABASE_URL=postgresql://user:password@localhost:5432/palscli
 
 # session/secret for your auth plugin
 SESSION_SECRET=replace_with_a_secure_value
@@ -140,7 +140,7 @@ The web UI will be available at `http://localhost:3000` and the API at the serve
 ## Usage
 
 - Web: open the app in a browser, sign in (via configured provider), create or select conversations, and chat.
-- CLI: after installing or linking the CLI (see `client` or `server/cli`), run `palcli chat` to start a terminal chat session.
+- CLI: after installing or linking the CLI (see `client` or `server/cli`), run `palscli chat` to start a terminal chat session.
 
 ## Troubleshooting
 

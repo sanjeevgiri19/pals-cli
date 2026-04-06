@@ -13,7 +13,7 @@ import {
 async function getBearer() {
   const token = await getStoredToken();
   if (!token?.access_token || (await isTokenExpired())) {
-    throw new Error("Not signed in. Run: palcli login");
+    throw new Error("Not signed in. Run: palscli login");
   }
   return token.access_token;
 }

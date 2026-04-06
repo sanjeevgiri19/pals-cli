@@ -35,8 +35,8 @@ export default function AboutPage() {
           terminal. Example usage:
         </p>
         <pre className="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm overflow-auto">
-          npm install -g palcli # Start a chat palcli chat # Run AI assist on a
-          file palcli ai analyze ./src/index.js
+          npm install -g palscli # Start a chat palscli chat # Run AI assist on a
+          file palscli ai analyze ./src/index.js
         </pre>
       </section>
 

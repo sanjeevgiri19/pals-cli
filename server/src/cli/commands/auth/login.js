@@ -27,7 +27,7 @@ export async function requireAuth() {
 
   if (!token) {
     console.log(
-      chalk.red("Not authenticated. Please run 'palCLI login' first."),
+      chalk.red("Not authenticated. Please run 'palscli login' first."),
     );
     process.exit(1);
   }
@@ -36,7 +36,7 @@ export async function requireAuth() {
     console.log(
       chalk.yellow("⚠️  Your session has expired. Please login again."),
     );
-    console.log(chalk.gray("   Run: PalCLI login\n"));
+    console.log(chalk.gray("   Run: palscli login\n"));
     process.exit(1);
   }
 

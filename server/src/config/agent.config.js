@@ -68,7 +68,13 @@ async function createApplicationFiles(baseDir, folderName, files) {
   printSystem(chalk.cyan(`\n📁 Created directory: ${folderName}/`));
   
   for (const file of files) {
-    const filePath = path.join(appDir, file.path);
+    // const filePath = path.join(appDir, file.path);
+const filePath = path.resolve(path.join(appDir, file.path));
+if (!filePath.startsWith(path.resolve(appDir))) {
+   throw new Error("Security Violation: Path traversal detected in AI payload");
+}
+
+
     const fileDir = path.dirname(filePath);
     
     await fs.mkdir(fileDir, { recursive: true });

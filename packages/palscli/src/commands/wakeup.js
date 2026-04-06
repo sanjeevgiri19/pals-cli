@@ -13,7 +13,7 @@ import { runChatSession } from "./chat-session.js";
 async function getBearer() {
   const token = await getStoredToken();
   if (!token?.access_token || (await isTokenExpired())) {
-    console.log(chalk.red("Not signed in. Run: palcli login"));
+    console.log(chalk.red("Not signed in. Run: palscli login"));
     process.exit(1);
   }
   return token.access_token;

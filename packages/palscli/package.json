@@ -1,11 +1,11 @@
 {
-  "name": "palcli",
-  "version": "1.0.0",
+  "name": "palscli",
+  "version": "1.0.2",
   "description": "Thin CLI for PAL — talks to your hosted PAL API (no local database).",
   "type": "module",
   "main": "./src/main.js",
   "bin": {
-    "palcli": "./bin/palcli.js"
+    "palscli": "bin/palscli.js"
   },
   "files": [
     "bin",
@@ -16,12 +16,15 @@
     "node": ">=20"
   },
   "keywords": [
-    "pal-cli",
+    "palscli",
     "cli",
     "ai",
     "chat"
   ],
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@clack/prompts": "^1.1.0",
     "better-auth": "^1.5.6",

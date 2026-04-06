@@ -50,7 +50,6 @@ app.use("/api/messages", messageRoutes);
 // // You can remove this endpoint if you're using the Bearer token approach above
 // app.get("/api/me/:access_token", async (req, res) => {
 //   const { access_token } = req.params;
-//   console.log(access_token);
 
 //   try {
 //     const session = await auth.api.getSession({
