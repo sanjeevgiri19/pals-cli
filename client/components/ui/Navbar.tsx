@@ -10,6 +10,8 @@ import { Terminal, Home, MessageSquare, FileText, Settings } from "lucide-react"
 export function Navbar() {
   const path = usePathname();
   const router = useRouter();
+
+  if (path === "/chat") return null;
   const { data } = authClient.useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

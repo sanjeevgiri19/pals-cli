@@ -86,7 +86,7 @@ export function MessageInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-6 bg-[#0e0e0e] relative"
+      className="px-6 py-2 bg-[#0e0e0e] relative"
     >
       {/* Container with Glassmorphism */}
       <div className="bg-[#131313]/50 backdrop-blur-2xl border border-white/5 rounded-3xl p-2 shadow-2xl">
@@ -151,9 +151,9 @@ export function MessageInput({
                     onChange={(e) => setContent(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={isLoading ? "PAL is thinking..." : "Ask your assistant anything..."}
-                    disabled={isLoading || disabled}
+                    // disabled={isLoading || disabled}
                     className={cn(
-                        "w-full bg-transparent border-none focus:ring-0 text-white placeholder:text-[#555] px-4 py-3",
+                        "w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 text-white placeholder:text-[#555] px-4 py-3",
                         "font-mono text-sm leading-relaxed"
                     )}
                 />
@@ -178,11 +178,11 @@ export function MessageInput({
         </div>
       </div>
       
-      <div className="mt-4 flex justify-center">
+      {/* <div className="mt-4 flex justify-center">
           <p className="text-[9px] font-mono uppercase tracking-[0.3em] text-[#333]">
               End-to-End Encrypted Session
           </p>
-      </div>
+      </div> */}
     </form>
   );
 }

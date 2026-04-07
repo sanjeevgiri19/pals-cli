@@ -36,7 +36,7 @@ export function LoginForm() {
       <div className="flex flex-col items-center justify-center space-y-4">
         <Image src={"/goodLogo.svg"} alt="Login" height={200} width={200} />
         <h1 className="text-6xl font-extrabold text-indigo-400">
-          Welcome Back! to Orbital Cli
+          Welcome Back! to Pals CLI
         </h1>
         <p className="text-base font-medium text-zinc-400">
           Login to your account for allowing device flow

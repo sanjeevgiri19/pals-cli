@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useConversations } from "@/hooks/useConversations";
 import { Conversation } from "@/lib/api/conversations";
-import { Plus, Trash2, Edit2, MessageSquare } from "lucide-react";
+import { Plus, Trash2, Edit2, MessageSquare, Terminal } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -81,9 +82,19 @@ export function ConversationSidebar({
   };
 
   return (
-    <div className="w-full bg-[#131313] flex flex-col h-full font-sans">
+    <div className="w-full bg-[#131313] flex flex-col h-full font-sans border-r border-white/5">
+      {/* Branding */}
+      <div className="p-6 pb-2">
+        <Link href="/" className="flex items-center gap-2.5 no-underline transition-opacity hover:opacity-80">
+          <Terminal size={22} className="text-[var(--pal-primary)]" />
+          <span className="text-xl font-black tracking-tight text-white m-0">
+            Pals-<span className="text-[var(--pal-primary)]">CLI</span>
+          </span>
+        </Link>
+      </div>
+
       {/* Header */}
-      <div className="p-6">
+      <div className="p-6 pt-4">
         <Button
           onClick={onCreateConversation}
           className="w-full gap-2 bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black font-bold rounded-full hover:shadow-[0_0_20px_rgba(182,160,255,0.3)] transition-all active:scale-95"

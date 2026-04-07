@@ -196,7 +196,7 @@ export default function DocsPage() {
               </h2>
               <p className="text-[var(--pal-muted)] max-w-lg mb-8">
                 Join 50k+ developers orchestrating their infrastructure through
-                the orbital interface.
+                the pals interface.
               </p>
 
               <div className="flex flex-wrap justify-center gap-4">
