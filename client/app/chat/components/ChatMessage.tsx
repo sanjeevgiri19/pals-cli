@@ -26,22 +26,19 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const [copiedContent, setCopiedContent] = useState<string | null>(null);
   const isUser = message.role === "user";
 
-  const authorInitial = isUser ? "Y" : "A";
-
   // Configure marked with syntax highlighting
-  // Create a small renderer for code blocks that uses highlight.js
   const renderer: any = {
     code(code: string, infostring?: string) {
       const lang = (infostring || "").trim();
       try {
         if (lang) {
           const highlighted = hljs.highlight(code, { language: lang }).value;
-          return `<pre class="hljs"><code>${highlighted}</code></pre>`;
+          return `<pre class="hljs terminal-code"><code>${highlighted}</code></pre>`;
         }
         const auto = hljs.highlightAuto(code).value;
-        return `<pre class="hljs"><code>${auto}</code></pre>`;
+        return `<pre class="hljs terminal-code"><code>${auto}</code></pre>`;
       } catch {
-        return `<pre class="hljs"><code>${code}</code></pre>`;
+        return `<pre class="hljs terminal-code"><code>${code}</code></pre>`;
       }
     },
   };
@@ -59,57 +56,80 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   return (
     <div
       className={cn(
-        "flex gap-3 mb-4 items-end",
-        isUser ? "justify-end" : "justify-start",
+        "flex gap-4 mb-8 items-start group font-sans animate-in fade-in slide-in-from-bottom-2 duration-300",
+        isUser ? "flex-row-reverse" : "flex-row",
       )}
     >
-      {!isUser && (
-        <div className="flex-shrink-0">
-          <div className="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center">
-            {authorInitial}
-          </div>
-        </div>
-      )}
-
-      <div
-        className={cn(
-          "max-w-2xl rounded-lg px-4 py-2.5 relative",
-          isUser
-            ? "bg-blue-600 text-white rounded-bl-none"
-            : "bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-100 rounded-br-none",
-        )}
-      >
-        {isStreaming ? (
-          <div className="flex items-center gap-2">
-            <div className="animate-pulse">{"▌"}</div>
-            <span className="inline-block animate-pulse">Thinking...</span>
-          </div>
-        ) : (
-          <div
-            className="prose prose-sm dark:prose-invert max-w-none prose-code:bg-gray-900 prose-code:text-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-900 prose-pre:p-3"
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
-          />
-        )}
-
-        <div className="text-xs mt-1 opacity-70 text-right">
-          <span>{new Date(message.createdAt).toLocaleTimeString()}</span>
+      {/* Avatar Section */}
+      <div className="shrink-0 pt-1">
+        <div className={cn(
+          "w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-[#0e0e0e] shadow-xl",
+          isUser 
+            ? "bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black" 
+            : "bg-white/5 text-[var(--pal-primary)] ring-1 ring-white/10"
+        )}>
+          {isUser ? "USER" : "PAL"}
         </div>
       </div>
 
-      {/* Copy buttons for code blocks */}
-      {!isUser && htmlContent.includes("<code>") && (
-        <button
-          onClick={() => handleCopy(message.content)}
-          className="self-end opacity-0 hover:opacity-100 transition-opacity p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
-          title="Copy message"
-        >
-          {copiedContent === message.content ? (
-            <Check className="w-4 h-4 text-green-600" />
-          ) : (
-            <Copy className="w-4 h-4" />
+      {/* Message Content */}
+      <div className={cn(
+        "max-w-[85%] sm:max-w-xl flex flex-col",
+        isUser ? "items-end" : "items-start"
+      )}>
+        {/* Label and Time */}
+        <div className="flex items-center gap-2 px-1 mb-2">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#adaaaa] opacity-60">
+                {isUser ? "You" : "PAL Assistant"}
+            </span>
+            <span className="text-[8px] font-mono text-[#555]">
+                {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+        </div>
+
+        <div
+          className={cn(
+            "relative rounded-2xl px-5 py-3.5 shadow-2xl transition-all",
+            isUser
+              ? "bg-[#262626] text-white rounded-tr-none border border-white/5"
+              : "bg-[#131313] text-[#adaaaa] rounded-tl-none border border-white/5"
           )}
-        </button>
-      )}
+        >
+          {isStreaming ? (
+            <div className="flex items-center gap-3 py-1">
+              <div className="w-1.5 h-4 bg-[var(--pal-primary)] animate-pulse rounded-full" />
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--pal-primary)] animate-pulse">Thinking...</span>
+            </div>
+          ) : (
+            <div
+              className={cn(
+                "prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed",
+                "prose-pre:bg-black prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:p-4",
+                "prose-code:text-[var(--pal-primary)] prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:before:content-none prose-code:after:content-none",
+                !isUser && "prose-p:text-[#adaaaa] prose-strong:text-white"
+              )}
+              dangerouslySetInnerHTML={{ __html: htmlContent }}
+            />
+          )}
+
+          {/* Inline Action Bar (only visible on hover for assistant) */}
+          {!isUser && !isStreaming && (
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all">
+                <button
+                onClick={() => handleCopy(message.content)}
+                className="p-1.5 rounded-full bg-white/5 hover:bg-white/20 text-[#adaaaa] hover:text-white transition-all backdrop-blur-md border border-white/10"
+                title="Copy message"
+                >
+                {copiedContent === message.content ? (
+                    <Check className="w-3 h-3 text-[var(--pal-primary)]" />
+                ) : (
+                    <Copy className="w-3 h-3" />
+                )}
+                </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

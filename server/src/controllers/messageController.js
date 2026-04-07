@@ -79,8 +79,26 @@ export async function sendMessage(req, res, next) {
         content: m.content,
       }));
 
+      // Set up tools based on conversation mode
+      let tools = undefined;
+      if (conversation.mode === "agent" || conversation.mode === "tool") {
+        const { availableTools } = await import("../config/tool.config.js");
+        tools = {};
+        for (const toolConfig of availableTools) {
+          try {
+             tools[toolConfig.id] = toolConfig.getTool();
+          } catch (e) {
+             console.error(`Failed to init tool ${toolConfig.id}:`, e.message);
+          }
+        }
+      }
+
       // Get AI response
-      const aiResponse = await aiService.sendMessage(aiMessages);
+      const aiResponse = await aiService.sendMessage(
+        aiMessages, 
+        undefined, // onChunk
+        tools
+      );
 
       // Save AI response
       const assistantMessage = await prisma.message.create({
@@ -102,6 +120,8 @@ export async function sendMessage(req, res, next) {
           {
             userMessage,
             assistantMessage,
+            toolCalls: aiResponse.toolCalls,
+            toolResults: aiResponse.toolResults
           },
           201,
         ),
@@ -151,6 +171,12 @@ async function handleStreamingResponse(
     };
 
     try {
+      // Get conversation details to check mode
+      const conversation = await prisma.conversation.findUnique({
+        where: { id: conversationId },
+        select: { mode: true }
+      });
+
       // Get conversation history
       const messages = await prisma.message.findMany({
         where: { conversationId },
@@ -163,14 +189,35 @@ async function handleStreamingResponse(
         content: m.content,
       }));
 
+      // Set up tools based on conversation mode
+      let tools = undefined;
+      if (conversation?.mode === "agent" || conversation?.mode === "tool") {
+        const { availableTools } = await import("../config/tool.config.js");
+        tools = {};
+        for (const toolConfig of availableTools) {
+           try {
+             tools[toolConfig.id] = toolConfig.getTool();
+           } catch (e) {
+             console.error(`Failed to init tool ${toolConfig.id}:`, e.message);
+           }
+        }
+      }
+
       // Track streamed content
       let fullResponse = "";
 
       // Get streaming response
-      const aiResponse = await aiService.sendMessage(aiMessages, (chunk) => {
-        fullResponse += chunk;
-        sendEvent("message_chunk", { chunk });
-      });
+      const aiResponse = await aiService.sendMessage(
+        aiMessages, 
+        (chunk) => {
+          fullResponse += chunk;
+          sendEvent("message_chunk", { chunk });
+        },
+        tools,
+        (toolCall) => {
+          sendEvent("tool_call", { toolCall });
+        }
+      );
 
       // Save assistant message
       const assistantMessage = await prisma.message.create({

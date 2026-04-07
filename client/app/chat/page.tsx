@@ -18,6 +18,7 @@ import { LogOut, Menu } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { cn } from "@/lib/utils";
 
 type ChatMode = "chat" | "tool" | "agent";
 
@@ -40,9 +41,9 @@ export default function ChatPage() {
   // Redirect if not authenticated (wait while auth is pending)
   useEffect(() => {
     if (isPending) return; // wait for auth to resolve
-    if (!session || !user) {
-      router.push("/sign-in");
-    }
+    // if (!session || !user) {
+    //   router.push("/sign-in");
+    // }
   }, [isPending, session, user, router]);
 
   const createConversation = useCreateConversation();
@@ -50,11 +51,9 @@ export default function ChatPage() {
     { limit: 100 },
     !!session,
   );
-  console.log("conversss", conversationsData);
 
   const { data: messagesData, isLoading: messagesLoading } =
     useConversationMessages(activeConversationId || "", undefined, !!session);
-  console.log("messsges data", messagesData);
 
   const sendMessage = useSendMessage(activeConversationId || "");
 
@@ -109,11 +108,8 @@ export default function ChatPage() {
     }
     // Clear Zustand and redirect
     try {
-      // const { logout } = await import("@/stores/useAuthStore");
-      // call logout from store
       useAuthStore.getState().logout();
     } catch (e) {
-      // fallback: directly clear
       useAuthStore.getState().logout();
     }
     router.push("/sign-in");
@@ -122,10 +118,13 @@ export default function ChatPage() {
   const messages = messagesData?.data || [];
 
   return (
-    <div className="flex h-screen bg-white dark:bg-gray-950">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-[#0e0e0e] text-white font-sans overflow-hidden">
+      {/* Sidebar - Tonal layering: Surface Container Low */}
       <div
-        className={`${sidebarOpen ? "w-64" : "w-0"} transition-all duration-300 overflow-hidden`}
+        className={cn(
+          "bg-[#131313] transition-all duration-300 overflow-hidden",
+          sidebarOpen ? "w-72" : "w-0"
+        )}
       >
         <ConversationSidebar
           activeId={activeConversationId || ""}
@@ -135,27 +134,32 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between gap-4">
+      <div className="flex-1 flex flex-col relative">
+        {/* Ambient glow in background */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(182,160,255,0.05)_0%,transparent_70%)] pointer-events-none -z-0" />
+
+        {/* Header - Glassmorphism */}
+        <div className="bg-[#131313]/80 backdrop-blur-xl p-4 flex items-center justify-between gap-4 z-10">
           <div className="flex items-center gap-3 flex-1">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden"
+              className="hover:bg-white/5 text-[#adaaaa]"
             >
-              <Menu className="w-4 h-4" />
+              <Menu className="w-5 h-5" />
             </Button>
             <div className="flex-1">
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                PALs CLI Chat
+              <h1 className="text-xl font-black tracking-tight text-white m-0">
+                PALs <span className="text-[var(--pal-primary)]">CLI</span> Chat
               </h1>
-              <p className="text-xs text-gray-500">Welcome, {user?.name}</p>
+              <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#adaaaa]">
+                Session active • {user?.name}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {activeConversationId && conversationsData?.data && (
               <ExportButton
                 conversation={
@@ -167,7 +171,12 @@ export default function ChatPage() {
                 disabled={!activeConversationId || messages.length === 0}
               />
             )}
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="text-[#adaaaa] hover:text-white hover:bg-white/5 rounded-full"
+            >
               <LogOut className="w-4 h-4 mr-2" />
               Logout
             </Button>
@@ -175,18 +184,22 @@ export default function ChatPage() {
         </div>
 
         {/* Messages Area */}
-        <MessageList
-          messages={messages}
-          isLoading={messagesLoading}
-          isStreaming={isStreaming}
-        />
+        <div className="flex-1 relative z-10">
+          <MessageList
+            messages={messages}
+            isLoading={messagesLoading}
+            isStreaming={isStreaming}
+          />
+        </div>
 
         {/* Input Area */}
-        <MessageInput
-          onSend={handleSendMessage}
-          isLoading={sendMessage.isPending || isStreaming}
-          disabled={!activeConversationId}
-        />
+        <div className="z-10">
+          <MessageInput
+            onSend={handleSendMessage}
+            isLoading={sendMessage.isPending || isStreaming}
+            disabled={!activeConversationId}
+          />
+        </div>
       </div>
     </div>
   );
