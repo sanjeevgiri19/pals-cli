@@ -29,6 +29,7 @@ type ChatMode = "chat" | "tool" | "agent";
  *
  * @returns The rendered chat page element.
  */
+
 export default function ChatPage() {
   const router = useRouter();
   const { user, session, isPending } = useSyncAuth(); // Use sync hook instead
@@ -41,9 +42,9 @@ export default function ChatPage() {
   // Redirect if not authenticated (wait while auth is pending)
   useEffect(() => {
     if (isPending) return; // wait for auth to resolve
-    // if (!session || !user) {
-    //   router.push("/sign-in");
-    // }
+    if (!session || !user) {
+      router.push("/sign-in");
+    }
   }, [isPending, session, user, router]);
 
   const createConversation = useCreateConversation();

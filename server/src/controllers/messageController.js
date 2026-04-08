@@ -19,6 +19,7 @@ const aiService = new AIService();
  * @param {import('express').Response} res - Express response.
  * @param {import('express').NextFunction} next - Express next middleware for error forwarding.
  */
+
 export async function sendMessage(req, res, next) {
   try {
     const userId = req.userId;
