@@ -22,14 +22,6 @@ import { cn } from "@/lib/utils";
 
 type ChatMode = "chat" | "tool" | "agent";
 
-/**
- * Renders the authenticated chat page with a collapsible conversation sidebar, message list, and message input.
- *
- * The component enforces authentication (redirecting to /sign-in when unauthenticated), loads conversations and messages for the active conversation, auto-selects the first conversation when none is selected, and provides handlers to create conversations, send messages, and sign out.
- *
- * @returns The rendered chat page element.
- */
-
 export default function ChatPage() {
   const router = useRouter();
   const { user, session, isPending } = useSyncAuth(); // Use sync hook instead
@@ -124,7 +116,7 @@ export default function ChatPage() {
       <div
         className={cn(
           "bg-[#131313] transition-all duration-300 overflow-hidden",
-          sidebarOpen ? "w-72" : "w-0"
+          sidebarOpen ? "w-72" : "w-0",
         )}
       >
         <ConversationSidebar
@@ -172,9 +164,9 @@ export default function ChatPage() {
                 disabled={!activeConversationId || messages.length === 0}
               />
             )}
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleLogout}
               className="text-[#adaaaa] hover:text-white hover:bg-white/5 rounded-full"
             >

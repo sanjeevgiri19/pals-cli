@@ -1,6 +1,6 @@
 "use client";
 
-import { Marked, marked } from "marked";
+import { marked } from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import { Message } from "@/lib/api/conversations";
@@ -13,21 +13,12 @@ interface ChatMessageProps {
   isStreaming?: boolean;
 }
 
-/**
- * Renders a single chat message bubble with Markdown rendering, optional "Thinking..." streaming UI, timestamp, avatar initial, and conditional code-copy support.
- *
- * Renders the message content as HTML from Markdown; when `isStreaming` is true it shows a pulsing "Thinking..." indicator instead of the rendered content. For non-user messages whose rendered HTML contains code blocks, a copy button is shown that writes the original message text to the clipboard and shows a check icon for 2 seconds after copying.
- *
- * @param message - The message object to render. Expected fields include `role`, `content`, and `createdAt`. For user messages an optional `userId` may be used to derive the avatar initial.
- * @param isStreaming - When true, shows the streaming/thinking UI instead of rendered Markdown.
- * @returns The JSX element for the chat message bubble.
- */
 export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const [copiedContent, setCopiedContent] = useState<string | null>(null);
   const isUser = message.role === "user";
 
   // Configure marked with syntax highlighting
-  const renderer: any = {
+  const renderer = {
     code(code: string, infostring?: string) {
       const lang = (infostring || "").trim();
       try {
@@ -62,29 +53,36 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
     >
       {/* Avatar Section */}
       <div className="shrink-0 pt-1">
-        <div className={cn(
-          "w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-[#0e0e0e] shadow-xl",
-          isUser 
-            ? "bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black" 
-            : "bg-white/5 text-[var(--pal-primary)] ring-1 ring-white/10"
-        )}>
+        <div
+          className={cn(
+            "w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-[#0e0e0e] shadow-xl",
+            isUser
+              ? "bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black"
+              : "bg-white/5 text-[var(--pal-primary)] ring-1 ring-white/10",
+          )}
+        >
           {isUser ? "USER" : "PAL"}
         </div>
       </div>
 
       {/* Message Content */}
-      <div className={cn(
-        "max-w-[85%] sm:max-w-xl flex flex-col",
-        isUser ? "items-end" : "items-start"
-      )}>
+      <div
+        className={cn(
+          "max-w-[85%] sm:max-w-xl flex flex-col",
+          isUser ? "items-end" : "items-start",
+        )}
+      >
         {/* Label and Time */}
         <div className="flex items-center gap-2 px-1 mb-2">
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#adaaaa] opacity-60">
-                {isUser ? "You" : "PAL Assistant"}
-            </span>
-            <span className="text-[8px] font-mono text-[#555]">
-                {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#adaaaa] opacity-60">
+            {isUser ? "You" : "PAL Assistant"}
+          </span>
+          <span className="text-[8px] font-mono text-[#555]">
+            {new Date(message.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
         </div>
 
         <div
@@ -92,13 +90,15 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
             "relative rounded-2xl px-5 py-3.5 shadow-2xl transition-all",
             isUser
               ? "bg-[#262626] text-white rounded-tr-none border border-white/5"
-              : "bg-[#131313] text-[#adaaaa] rounded-tl-none border border-white/5"
+              : "bg-[#131313] text-[#adaaaa] rounded-tl-none border border-white/5",
           )}
         >
           {isStreaming ? (
             <div className="flex items-center gap-3 py-1">
               <div className="w-1.5 h-4 bg-[var(--pal-primary)] animate-pulse rounded-full" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--pal-primary)] animate-pulse">Thinking...</span>
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--pal-primary)] animate-pulse">
+                Thinking...
+              </span>
             </div>
           ) : (
             <div
@@ -106,7 +106,7 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
                 "prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed",
                 "prose-pre:bg-black prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:p-4",
                 "prose-code:text-[var(--pal-primary)] prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:before:content-none prose-code:after:content-none",
-                !isUser && "prose-p:text-[#adaaaa] prose-strong:text-white"
+                !isUser && "prose-p:text-[#adaaaa] prose-strong:text-white",
               )}
               dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
@@ -115,17 +115,17 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
           {/* Inline Action Bar (only visible on hover for assistant) */}
           {!isUser && !isStreaming && (
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all">
-                <button
+              <button
                 onClick={() => handleCopy(message.content)}
                 className="p-1.5 rounded-full bg-white/5 hover:bg-white/20 text-[#adaaaa] hover:text-white transition-all backdrop-blur-md border border-white/10"
                 title="Copy message"
-                >
+              >
                 {copiedContent === message.content ? (
-                    <Check className="w-3 h-3 text-[var(--pal-primary)]" />
+                  <Check className="w-3 h-3 text-[var(--pal-primary)]" />
                 ) : (
-                    <Copy className="w-3 h-3" />
+                  <Copy className="w-3 h-3" />
                 )}
-                </button>
+              </button>
             </div>
           )}
         </div>

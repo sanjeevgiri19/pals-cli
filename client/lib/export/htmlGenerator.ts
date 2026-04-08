@@ -1,13 +1,6 @@
 import { Conversation, Message } from "@/lib/api/conversations";
 import { marked } from "marked";
-import hljs from "highlight.js";
 
-/**
- * Generates HTML representation of a conversation for PDF export
- * @param conversation - The conversation to convert
- * @param messages - Array of messages to convert
- * @returns HTML string representation
- */
 export function generateConversationHTML(
   conversation: Conversation,
   messages: Message[],

@@ -4,18 +4,6 @@ import { useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useAuthStore } from "@/stores/useAuthStore";
 
-/**
- * Synchronizes Better-Auth session state into the app's Zustand auth store.
- *
- * While the session query is pending, the hook does nothing. When an active
- * session and user are present it writes session metadata (token, expiresAt,
- * createdAt, updatedAt, ipAddress, userAgent, userId, id) and the user to the
- * store; when no active session is available it clears the store.
- *
- * @returns An object with `session` (the token session or `undefined`), `user`
- *   (the authenticated user or `undefined`), and `isPending` (whether the
- *   session query is still pending)
- */
 export function useSyncAuth() {
   const { data: session, isPending } = authClient.useSession();
   const { setAuthState } = useAuthStore();

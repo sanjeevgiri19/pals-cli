@@ -1,19 +1,12 @@
 import { Conversation, Message } from "@/lib/api/conversations";
 import { generateConversationHTML } from "./htmlGenerator";
 
-/**
- * Exports a conversation to PDF format
- * Uses html2pdf.js library for PDF generation
- * @param conversation - The conversation to export
- * @param messages - Array of messages to export
- * @returns Promise that resolves when PDF is generated and downloaded
- */
 export async function exportAsPDF(
   conversation: Conversation,
   messages: Message[],
 ): Promise<void> {
   // Dynamically import html2pdf to avoid bundle size issues
-const html2pdf = (await import("html2pdf.js")).default as any;
+  const html2pdf = (await import("html2pdf.js")).default;
   // Generate HTML content
   const htmlContent = generateConversationHTML(conversation, messages);
 
@@ -69,7 +62,7 @@ export async function isPDFExportAvailable(): Promise<boolean> {
   try {
     // Try to detect if html2pdf is available
     // This will be true if the library is loaded
-    return typeof (window as any).html2pdf !== "undefined";
+    return typeof window.html2pdf !== "undefined";
   } catch {
     return false;
   }

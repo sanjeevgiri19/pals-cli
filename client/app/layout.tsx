@@ -18,7 +18,6 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-
 export const metadata: Metadata = {
   title: "Pals-CLI | AI-Powered Intelligence for Your Terminal",
   description:
@@ -26,14 +25,6 @@ export const metadata: Metadata = {
   keywords: ["CLI", "AI", "terminal", "developer tool", "chatbot", "codegen"],
 };
 
-/**
- * Root layout component that provides app-level context and page chrome.
- *
- * Wraps the application with theme, authentication, and data-query providers, renders the global Navbar, and places routed content inside the page's main region.
- *
- * @param children - The routed page content to render inside the layout's main element
- * @returns The root HTML element containing providers, the Navbar, and the main content
- */
 export default function RootLayout({
   children,
 }: Readonly<{

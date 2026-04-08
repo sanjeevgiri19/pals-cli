@@ -21,11 +21,6 @@ interface ExportDialogProps {
 
 type ExportFormat = "markdown" | "pdf";
 
-/**
- * Dialog component for exporting conversations in different formats
- * Allows users to choose between Markdown and PDF formats with options
- * for including metadata and timestamps
- */
 export function ExportDialog({
   conversation,
   messages,

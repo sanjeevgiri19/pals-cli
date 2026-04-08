@@ -5,13 +5,7 @@ export interface ExportOptions {
   includeTimestamps?: boolean;
 }
 
-/**
- * Converts a conversation and its messages to Markdown format
- * @param conversation - The conversation to export
- * @param messages - Array of messages in the conversation
- * @param options - Export configuration options
- * @returns Markdown string representation of the conversation
- */
+
 export function exportAsMarkdown(
   conversation: Conversation,
   messages: Message[],

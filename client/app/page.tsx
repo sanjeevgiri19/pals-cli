@@ -11,7 +11,6 @@ import {
   Wand2,
   Rocket,
   ArrowRight,
-  // Github,
 } from "lucide-react";
 import { Footer } from "@/components/ui/Footer";
 import { CTASection } from "@/components/CTASection";

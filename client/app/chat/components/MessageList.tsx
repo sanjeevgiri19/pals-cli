@@ -13,20 +13,7 @@ interface MessageListProps {
   isStreaming?: boolean;
 }
 
-/**
- * Render a scrollable list of chat messages with optional loading, pagination, and per-message streaming indicators.
- *
- * Displays a centered spinner when loading with no messages, a "Load more messages" control when older messages are available,
- * an empty-state prompt when there are no messages, and an ordered set of ChatMessage items when messages exist.
- * Automatically scrolls to the bottom whenever `messages` changes.
- *
- * @param messages - Array of conversation messages to render (each must include a stable `id`)
- * @param isLoading - If true, renders loading states and disables the "Load more messages" control
- * @param hasMore - If true, shows a "Load more messages" button to fetch older messages
- * @param onLoadMore - Click handler invoked to request older messages
- * @param isStreaming - If true, marks assistant messages as streaming (applies per-message based on role)
- * @returns A React element representing the message list UI
- */
+
 export function MessageList({
   messages,
   isLoading,

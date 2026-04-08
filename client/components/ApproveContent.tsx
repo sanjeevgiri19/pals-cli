@@ -8,13 +8,6 @@ import { useState, useEffect } from "react";
 import { CheckCircle, XCircle, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 
-/**
- * Renders the device authorization UI and handles approving or denying a device using the URL `user_code`.
- *
- * Displays a full-screen loading view while the session is pending, redirects to "/sign-in" if the user is not authenticated, and otherwise shows the authorization code, account info, and action buttons. Clicking the action buttons initiates device approval or denial requests, shows toast notifications for progress and outcome, and navigates to the home page on success.
- *
- * @returns The React element for the device approval page.
- */
 export default function DeviceApprovalContent() {
   const { data, isPending } = authClient.useSession();
   const router = useRouter();
@@ -24,15 +17,6 @@ export default function DeviceApprovalContent() {
     approve: false,
     deny: false,
   });
-
-  if (isPending) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen bg-background">
-        <Spinner />
-      </div>
-    );
-  }
-
 
   useEffect(() => {
     if (!isPending && !data?.session && !data?.user) {
@@ -55,7 +39,6 @@ export default function DeviceApprovalContent() {
     } catch (error) {
       toast.error("Failed to approve device");
       console.log("err", error);
-      
     }
     setIsProcessing({ approve: false, deny: false });
   };
@@ -71,10 +54,17 @@ export default function DeviceApprovalContent() {
     } catch (error) {
       toast.error("Failed to deny device");
       console.log("err", error);
-      
     }
     setIsProcessing({ approve: false, deny: false });
   };
+
+  if (isPending) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-background">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background font-sans">
