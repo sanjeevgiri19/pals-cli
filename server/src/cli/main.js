@@ -14,7 +14,7 @@ async function main() {
 
   console.log(
     chalk.red(
-      figlet.textSync("Pal Cli", {
+      figlet.textSync("Pals Cli", {
         font: "Standard",
         horizontalLayout: "default",
       }),
@@ -27,7 +27,7 @@ async function main() {
 
   program
     .version("0.0.1")
-    .description("Pal CLI- A CLI based AI Tool")
+    .description("Pals CLI- A CLI based AI Tool")
     .addCommand(login)
     .addCommand(logout)
     .addCommand(whoami)
@@ -42,6 +42,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.log(chalk.red("Error running PAL CLI"), err);
+  console.log(chalk.red("Error running PALS CLI"), err);
   process.exit(1);
 });

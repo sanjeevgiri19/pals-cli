@@ -1,39 +1,59 @@
 import chalk from "chalk";
-import figlet from "figlet";
 import { Command } from "commander";
-import { login, logout } from "./commands/login.js";
-import { whoami } from "./commands/whoami.js";
-import { wakeup } from "./commands/wakeup.js";
-import { startChatFromCli } from "./commands/chat-session.js";
 
+// Remove figlet and eager imports to drastically improve startup time!
 async function main() {
-  console.log(
-    chalk.cyan(
-      figlet.textSync("PALs CLI", {
-        font: "Standard",
-        horizontalLayout: "default",
-      }),
-    ),
-  );
-  console.log(chalk.gray("Thin client — your API holds secrets & data.\n"));
-
   const program = new Command("palscli");
 
   program
     .name("palscli")
-    .version("1.0.2")
-    .description("PALs command-line client (hosted API)");
+    .version("1.0.5")
+    .description(chalk.cyan("PALs CLI — Thin client (hosted API)"));
 
   program
     .command("chat")
     .description("Start a chat session (creates a conversation on the server)")
-    .action(() => startChatFromCli());
+    .action(async () => {
+      const { startChatFromCli } = await import("./commands/chat-session.js");
+      await startChatFromCli();
+    });
 
-  program.addCommand(login);
-  program.addCommand(logout);
-  program.addCommand(whoami);
-  program.addCommand(wakeup);
+  program
+    .command("login")
+    .description("Sign in with GitHub (device flow)")
+    .option("--server-url <url>", "PAL API base URL (Better Auth)")
+    .option("--client-id <id>", "GitHub OAuth App client ID")
+    .action(async (opts) => {
+      const { loginAction } = await import("./commands/login.js");
+      await loginAction(opts);
+    });
 
+  program
+    .command("logout")
+    .description("Remove saved credentials")
+    .action(async () => {
+      const { logoutAction } = await import("./commands/login.js");
+      await logoutAction();
+    });
+
+  program
+    .command("whoami")
+    .description("Show signed-in user (from API)")
+    .option("--server-url <url>", "PAL API base URL")
+    .action(async (opts) => {
+      const { whoamiAction } = await import("./commands/whoami.js");
+      await whoamiAction(opts);
+    });
+
+  program
+    .command("wakeup")
+    .description("Open the PAL menu (chat via API)")
+    .action(async () => {
+      const { wakeupAction } = await import("./commands/wakeup.js");
+      await wakeupAction();
+    });
+
+  // For a clean feeling, just show help if no args provided
   program.action(() => {
     program.help();
   });
@@ -42,6 +62,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(chalk.red("palscli error:"), err);
+  console.error(chalk.red("\n[palscli error] "), err.message || err);
   process.exit(1);
 });

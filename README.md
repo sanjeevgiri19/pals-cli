@@ -1,8 +1,8 @@
-# PAL CLI
+# PALS CLI
 
-> PAL CLI — an AI assistant for developers with a web chat UI and a CLI interface.
+> PALS CLI — an AI assistant for developers with a web chat UI and a CLI interface.
 
-PAL CLI provides an interactive chat experience (web + CLI), integrates with external tools, and exposes an HTTP API backed by a Node/Express server and Prisma for persistence.
+PALs CLI provides an interactive chat experience (web + CLI), integrates with external tools, and exposes an HTTP API backed by a Node/Express server and Prisma for persistence.
 
 ---
 
@@ -165,17 +165,3 @@ Contributions are welcome. Suggested workflow:
 2. Create a feature branch
 3. Make changes and run the app locally
 4. Open a pull request with a clear description
-
-<!-- ## License
-
-Add your license here (MIT, Apache-2.0, etc.) -->
-
----
-<!-- 
-If you'd like, I can also:
-
-- Add a `CONTRIBUTING.md` with more detailed developer setup steps
-- Add a quickstart script and `Makefile` to start both server/client with one command
-- Add CI configuration to run tests/linting on PRs
-
-Feel free to tell me what you want included or any preferred wording and I will update the README. -->

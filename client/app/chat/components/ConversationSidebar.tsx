@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useConversations } from "@/hooks/useConversations";
 import { Conversation } from "@/lib/api/conversations";
-import { Plus, Trash2, Edit2, MessageSquare } from "lucide-react";
+import { Plus, Trash2, Edit2, MessageSquare, Terminal } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -81,12 +82,22 @@ export function ConversationSidebar({
   };
 
   return (
-    <div className="w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col h-full">
+    <div className="w-full bg-[#131313] flex flex-col h-full font-sans border-r border-white/5">
+      {/* Branding */}
+      <div className="p-6 pb-2">
+        <Link href="/" className="flex items-center gap-2.5 no-underline transition-opacity hover:opacity-80">
+          <Terminal size={22} className="text-[var(--pal-primary)]" />
+          <span className="text-xl font-black tracking-tight text-white m-0">
+            Pals-<span className="text-[var(--pal-primary)]">CLI</span>
+          </span>
+        </Link>
+      </div>
+
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+      <div className="p-6 pt-4">
         <Button
           onClick={onCreateConversation}
-          className="w-full gap-2"
+          className="w-full gap-2 bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black font-bold rounded-full hover:shadow-[0_0_20px_rgba(182,160,255,0.3)] transition-all active:scale-95"
           size="sm"
         >
           <Plus className="w-4 h-4" />
@@ -95,25 +106,25 @@ export function ConversationSidebar({
       </div>
 
       {/* Conversations List */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
         {isLoading ? (
-          <div className="flex items-center justify-center h-20">
+          <div className="flex items-center justify-center h-20 opacity-50">
             <Spinner />
           </div>
         ) : conversations.length === 0 ? (
-          <div className="p-4 text-center text-sm text-gray-500">
-            No conversations yet
+          <div className="p-8 text-center text-[10px] font-mono uppercase tracking-widest text-[#adaaaa] opacity-40">
+            No active sessions
           </div>
         ) : (
-          <div className="space-y-1 p-2">
+          <div className="space-y-2 pb-4">
             {conversations.map((conversation) => (
               <div
                 key={conversation.id}
                 className={cn(
-                  "group relative rounded-lg p-3 cursor-pointer transition-colors",
+                  "group relative rounded-xl p-4 cursor-pointer transition-all duration-200 border border-transparent",
                   activeId === conversation.id
-                    ? "bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100"
-                    : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100",
+                    ? "bg-[#262626] border-white/5 shadow-lg"
+                    : "hover:bg-white/[0.03]"
                 )}
                 onClick={() => onSelectConversation(conversation.id)}
               >
@@ -131,31 +142,39 @@ export function ConversationSidebar({
                         setEditingId(null);
                       }
                     }}
-                    className="h-8"
+                    className="h-8 bg-black/50 border-white/10 text-white rounded-lg focus:border-[var(--pal-primary)]"
                     onClick={(e) => e.stopPropagation()}
                   />
                 ) : (
                   <>
-                    <div className="flex items-start gap-2">
-                      <MessageSquare className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-start gap-3">
+                      <div className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
+                        activeId === conversation.id ? "bg-[var(--pal-primary)] text-black" : "bg-white/5 text-[#adaaaa]"
+                      )}>
+                        <MessageSquare className="w-4 h-4" />
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">
+                        <p className={cn(
+                          "font-bold text-sm truncate m-0",
+                          activeId === conversation.id ? "text-white" : "text-[#adaaaa] group-hover:text-white"
+                        )}>
                           {conversation.title}
                         </p>
-                        <p className="text-xs opacity-70 truncate line-clamp-2">
-                          {conversation.lastMessage || "No messages yet"}
+                        <p className="text-[10px] font-mono uppercase tracking-widest text-[#555] mt-1 truncate">
+                          {conversation.lastMessage || "Empty session"}
                         </p>
                       </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleRename(conversation);
                         }}
-                        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                        className="p-1.5 hover:bg-white/10 rounded-full text-[#adaaaa]"
                         title="Rename"
                         disabled={isDeleting === conversation.id}
                       >
@@ -166,7 +185,7 @@ export function ConversationSidebar({
                           e.stopPropagation();
                           handleDelete(conversation.id);
                         }}
-                        className="p-1 hover:bg-red-100 dark:hover:bg-red-900 rounded text-red-600 disabled:opacity-50"
+                        className="p-1.5 hover:bg-red-500/20 rounded-full text-red-400 disabled:opacity-50"
                         title="Delete"
                         disabled={isDeleting === conversation.id}
                       >
@@ -182,8 +201,11 @@ export function ConversationSidebar({
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-500">
-        <p>Conversations: {conversations.length}</p>
+      <div className="p-6 bg-black/20">
+        <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] text-[#adaaaa] opacity-40">
+            <span>SESSIONS</span>
+            <span>{conversations.length.toString().padStart(2, '0')}</span>
+        </div>
       </div>
     </div>
   );

@@ -16,23 +16,26 @@ async function getBearer() {
   return token.access_token;
 }
 
-export async function whoamiAction(opts) {
+export async function whoamiAction(opts = {}) {
   const baseUrl = opts.serverUrl || getApiUrl();
+  const palPrimary = chalk.hex("#b6a0ff");
   try {
     const json = await apiRequest(baseUrl, getBearer, "/api/me", {
       method: "GET",
     });
     const user = json?.data;
     if (!user) {
-      console.log(chalk.red("Unexpected response from /api/me"));
+      console.log(`\n  ${chalk.red("✖")}  ${chalk.red("Unexpected response from /api/me")}\n`);
       process.exit(1);
     }
     console.log(
-      chalk.bold.green(`\n${user.name}\n`) +
-        chalk.gray(`email: ${user.email}\nid:   ${user.id}\n`),
+      `\n  ${chalk.green("●")}  ${chalk.bold("Identity confirmed")}\n` +
+      `  ${palPrimary.bold(user.name)}\n` +
+      `  ${chalk.dim("email:")} ${chalk.white(user.email)}\n` +
+      `  ${chalk.dim("id:   ")} ${chalk.white(user.id)}\n`
     );
   } catch (e) {
-    console.log(chalk.red(e.message));
+    console.log(`\n  ${chalk.red("✖")}  ${chalk.red(e.message)}\n`);
     process.exit(1);
   }
 }

@@ -86,80 +86,103 @@ export function MessageInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-t border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-950"
+      className="px-6 py-2 bg-[#0e0e0e] relative"
     >
-      {/* Mode Selector */}
-      <div className="mb-3 flex gap-2">
-        <div className="relative" ref={modeRef}>
-          <button
-            type="button"
-            onClick={() => setShowModes(!showModes)}
-            className={cn(
-              "px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-              "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100",
-              "hover:bg-gray-200 dark:hover:bg-gray-700",
-            )}
-          >
-            {MODES.find((m) => m.value === mode)?.label}
-          </button>
-
-          {showModes && (
-            <div className="absolute bottom-full mb-2 left-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-48">
-              {MODES.map((m) => (
+      {/* Container with Glassmorphism */}
+      <div className="bg-[#131313]/50 backdrop-blur-2xl border border-white/5 rounded-3xl p-2 shadow-2xl">
+        {/* Mode Selector Row */}
+        <div className="flex items-center gap-2 mb-2 px-2">
+            <div className="relative" ref={modeRef}>
                 <button
-                  key={m.value}
-                  type="button"
-                  onClick={() => {
-                    setMode(m.value);
-                    setShowModes(false);
-                  }}
-                  className={cn(
-                    "w-full text-left px-4 py-3 text-sm transition-colors border-b border-gray-100 dark:border-gray-700 last:border-0",
-                    mode === m.value
-                      ? "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-100"
-                      : "hover:bg-gray-50 dark:hover:bg-gray-700",
-                  )}
+                    type="button"
+                    onClick={() => setShowModes(!showModes)}
+                    className={cn(
+                    "px-3 py-1.5 rounded-full text-[10px] font-mono uppercase tracking-widest transition-all",
+                    "bg-[#262626] text-[var(--pal-primary)] border border-white/5",
+                    "hover:bg-[#2c2c2c] hover:border-[var(--pal-primary)]/30"
+                    )}
                 >
-                  <div className="font-medium">{m.label}</div>
-                  <div className="text-xs opacity-70">{m.description}</div>
+                    {MODES.find((m) => m.value === mode)?.label}
                 </button>
-              ))}
+
+                {showModes && (
+                    <div className="absolute bottom-full mb-4 left-0 bg-[#262626] border border-white/10 rounded-2xl shadow-2xl z-50 min-w-56 overflow-hidden animate-in slide-in-from-bottom-2 duration-200">
+                    <div className="p-2 border-b border-white/5 bg-white/5">
+                        <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#adaaaa] px-2">Select Engine</span>
+                    </div>
+                    {MODES.map((m) => (
+                        <button
+                        key={m.value}
+                        type="button"
+                        onClick={() => {
+                            setMode(m.value);
+                            setShowModes(false);
+                        }}
+                        className={cn(
+                            "w-full text-left px-4 py-3 transition-all",
+                            mode === m.value
+                            ? "bg-[var(--pal-primary)]/10 text-[var(--pal-primary)]"
+                            : "text-[#adaaaa] hover:bg-white/5 hover:text-white"
+                        )}
+                        >
+                        <div className="text-xs font-bold">{m.label}</div>
+                        <div className="text-[10px] opacity-60 leading-tight mt-0.5">{m.description}</div>
+                        </button>
+                    ))}
+                    </div>
+                )}
             </div>
-          )}
+
+            <div className="h-4 w-[1px] bg-white/10 mx-1" />
+
+            <div className="text-[10px] font-mono uppercase tracking-widest text-[#555]">
+                {mode === "chat" && "Optimized for speed"}
+                {mode === "tool" && "API integration active"}
+                {mode === "agent" && "Multi-step reasoning"}
+            </div>
         </div>
 
-        <div className="flex-1" />
-
-        <div className="text-xs text-gray-500">
-          {mode === "chat" && "💬 Basic chat"}
-          {mode === "tool" && "🔧 With tools & APIs"}
-          {mode === "agent" && "🤖 Autonomous agent"}
+        {/* Input Row */}
+        <div className="flex items-center gap-2">
+            <div className="flex-1 relative">
+                <input
+                    ref={inputRef}
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={isLoading ? "PAL is thinking..." : "Ask your assistant anything..."}
+                    // disabled={isLoading || disabled}
+                    className={cn(
+                        "w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 text-white placeholder:text-[#555] px-4 py-3",
+                        "font-mono text-sm leading-relaxed"
+                    )}
+                />
+            </div>
+            
+            <button
+                type="submit"
+                disabled={isLoading || disabled || !content.trim()}
+                className={cn(
+                    "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 active:scale-90",
+                    content.trim() && !isLoading 
+                        ? "bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black shadow-[0_0_20px_rgba(182,160,255,0.4)]" 
+                        : "bg-white/5 text-[#333]"
+                )}
+            >
+                {isLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                    <Send className={cn("w-5 h-5", content.trim() ? "translate-x-0.5 -translate-y-0.5" : "")} />
+                )}
+            </button>
         </div>
       </div>
-
-      {/* Input */}
-      <div className="flex gap-2">
-        <Input
-          ref={inputRef}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your message... (Shift+Enter for new line)"
-          disabled={isLoading || disabled}
-          className="flex-1"
-        />
-        <Button
-          type="submit"
-          disabled={isLoading || disabled || !content.trim()}
-          size="sm"
-        >
-          {isLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Send className="w-4 h-4" />
-          )}
-        </Button>
-      </div>
+      
+      {/* <div className="mt-4 flex justify-center">
+          <p className="text-[9px] font-mono uppercase tracking-[0.3em] text-[#333]">
+              End-to-End Encrypted Session
+          </p>
+      </div> */}
     </form>
   );
 }

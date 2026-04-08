@@ -45,7 +45,7 @@ export function MessageList({
   if (isLoading && messages.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--pal-primary)] opacity-50" />
       </div>
     );
   }
@@ -53,25 +53,28 @@ export function MessageList({
   return (
     <div
       ref={containerRef}
-      className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
+      className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar"
     >
       {hasMore && (
         <div className="flex justify-center py-4">
           <button
             onClick={onLoadMore}
             disabled={isLoading}
-            className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 disabled:opacity-50"
+            className="text-[10px] font-mono uppercase tracking-widest text-[#adaaaa] hover:text-white transition-colors disabled:opacity-50"
           >
-            {isLoading ? "Loading..." : "Load more messages"}
+            {isLoading ? "Fetching history..." : "Load more messages"}
           </button>
         </div>
       )}
 
       {messages.length === 0 ? (
-        <div className="flex items-center justify-center h-full text-gray-500">
-          <div className="text-center">
-            <p className="text-lg font-medium">No messages yet</p>
-            <p className="text-sm">Start a conversation by sending a message</p>
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 rounded-3xl bg-white/5 flex items-center justify-center mx-auto mb-6">
+                <Loader2 className="w-8 h-8 text-[var(--pal-primary)] opacity-20" />
+            </div>
+            <p className="text-2xl font-black tracking-tight text-white m-0">No active context</p>
+            <p className="text-sm font-mono uppercase tracking-[0.2em] text-[#adaaaa]">Start a secure session below</p>
           </div>
         </div>
       ) : (
@@ -84,7 +87,7 @@ export function MessageList({
         ))
       )}
 
-      <div ref={messagesEndRef} />
+      <div ref={messagesEndRef} className="h-4" />
     </div>
   );
 }

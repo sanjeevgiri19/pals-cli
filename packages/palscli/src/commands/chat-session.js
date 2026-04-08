@@ -24,8 +24,9 @@ async function getBearer() {
  */
 export async function runChatSession(baseUrl, mode = "chat") {
   const tokenGetter = getBearer;
+  const palPrimary = chalk.hex("#b6a0ff");
 
-  const spin = yoctoSpinner({ text: "Starting conversation…" }).start();
+  const spin = yoctoSpinner({ text: chalk.dim("Initializing encrypted session…") }).start();
   let conversation;
   try {
     const created = await apiRequest(baseUrl, tokenGetter, "/api/conversations", {
@@ -33,52 +34,32 @@ export async function runChatSession(baseUrl, mode = "chat") {
       body: JSON.stringify({ mode }),
     });
     conversation = created?.data;
-    if (!conversation?.id) throw new Error("Could not create conversation");
-    spin.success("Ready");
+    if (!conversation?.id) throw new Error("Session negotiation failed");
+    spin.success(chalk.dim("Secure channel established\n"));
   } catch (e) {
-    spin.error("Failed");
+    spin.error(chalk.red("Network error during handshake"));
     throw e;
   }
 
-  console.log(
-    boxen(
-      `${chalk.bold("Conversation")}: ${conversation.title}\n${chalk.gray("ID: " + conversation.id)}`,
-      {
-        padding: 1,
-        margin: { top: 1, bottom: 1 },
-        borderStyle: "round",
-        borderColor: "cyan",
-        title: "PAL chat",
-        titleAlignment: "center",
-      },
-    ),
-  );
+  console.log(`  ${palPrimary.bold("CONTEXT:")} ${chalk.white(conversation.title)}`);
+  console.log(`  ${palPrimary.bold("SESSION:")} ${chalk.dim(conversation.id)}\n`);
 
-  const help = boxen(
-    `${chalk.gray("Enter message · exit or quit to leave · Ctrl+C to abort")}`,
-    {
-      padding: 1,
-      margin: { bottom: 1 },
-      borderStyle: "round",
-      borderColor: "gray",
-      dimBorder: true,
-    },
-  );
-  console.log(help);
+  console.log(`  ${chalk.dim("Type 'exit' or 'quit' to terminate • Ctrl+C to force close")}\n`);
 
   let firstExchange = true;
 
   while (true) {
     const userInput = await text({
-      message: chalk.blue("You"),
-      placeholder: "Message…",
+      message: palPrimary.bold("USER"),
+      placeholder: "Ask anything…",
       validate(value) {
-        if (!value || !value.trim()) return "Message cannot be empty";
+        if (!value || !value.trim()) return "Message body required";
       },
     });
 
     if (isCancel(userInput)) {
-      console.log(chalk.yellow("Bye."));
+      console.log(chalk.dim("\n  Closing PAL terminal context…"));
+      outro(palPrimary.bold(" SESSION OFFLINE "));
       process.exit(0);
     }
 
@@ -86,7 +67,7 @@ export async function runChatSession(baseUrl, mode = "chat") {
     const lower = trimmed.toLowerCase();
     if (lower === "exit" || lower === "quit") break;
 
-    const wait = yoctoSpinner({ text: "Thinking…" }).start();
+    const wait = yoctoSpinner({ text: chalk.dim("Consulting PAL assistant Engine…") }).start();
     try {
       const res = await apiRequest(
         baseUrl,
@@ -101,7 +82,12 @@ export async function runChatSession(baseUrl, mode = "chat") {
 
       const assistantContent = res?.data?.assistantMessage?.content;
       if (assistantContent == null) {
-        throw new Error("No assistant reply in response");
+        throw new Error("Assistant did not produce a valid token stream");
+      }
+
+      // Display tool execution if any
+      if (res.data.toolCalls && Array.isArray(res.data.toolCalls) && res.data.toolCalls.length > 0) {
+        console.log(`  ${chalk.dim("●")}  ${chalk.dim(`Tools invoked: ${res.data.toolCalls.map(tc => tc.toolName).join(', ')}`)}`);
       }
 
       if (firstExchange) {
@@ -124,31 +110,26 @@ export async function runChatSession(baseUrl, mode = "chat") {
       }
 
       const rendered = renderMarkdown(assistantContent);
-      console.log(
-        boxen(rendered.trim(), {
-          padding: 1,
-          margin: { left: 0, bottom: 1 },
-          borderStyle: "round",
-          borderColor: "green",
-          title: "Assistant",
-          titleAlignment: "left",
-        }),
-      );
+      console.log(`\n  ${palPrimary.bold("PALS ASSISTANT")}\n`);
+      console.log(rendered.trim().split('\n').map(line => `  ${line}`).join('\n'));
+      console.log("");
+
     } catch (e) {
       wait.stop();
-      console.log(boxen(chalk.red(e.message), { padding: 1, borderColor: "red" }));
+      console.log(`\n  ${chalk.red("!")}  ${chalk.red(e.message)}\n`);
     }
   }
 
-  outro(chalk.green("Session ended."));
+  outro(palPrimary.bold(" SESSION CLOSED "));
 }
 
 export async function startChatFromCli() {
-  intro(boxen(chalk.bold.cyan("PAL CLI chat"), { padding: 1, borderStyle: "double" }));
+  const palPrimary = chalk.hex("#b6a0ff");
+  intro(palPrimary.bold(" PALS CHAT • SECURE SESSION "));
   try {
     await runChatSession(getApiUrl(), "chat");
   } catch (e) {
-    console.log(boxen(chalk.red(e.message), { padding: 1, borderColor: "red" }));
+    console.log(`\n  ${chalk.red("✖")}  ${chalk.red(e.message)}\n`);
     process.exit(1);
   }
 }

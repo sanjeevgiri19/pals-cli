@@ -90,7 +90,7 @@ export async function loginAction(opts) {
   const serverUrl = options.serverUrl || getApiUrl();
   const clientId = options.clientId || getGithubClientId();
 
-  intro(chalk.bold("PAL CLI — sign in"));
+  intro(chalk.bold("PALS CLI — sign in"));
 
   if (!clientId) {
     console.log(

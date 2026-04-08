@@ -86,16 +86,10 @@ if (!filePath.startsWith(path.resolve(appDir))) {
 }
 
 /**
- * Generate application using structured output
+ * Generate project structure using structured output (No FS operations)
  */
-export async function generateApplication(description, aiService, cwd = process.cwd()) {
+export async function generateProjectStructure(description, aiService) {
   try {
-    printSystem(chalk.cyan('\n🤖 Agent Mode: Generating your application...\n'));
-    printSystem(chalk.gray(`Request: ${description}\n`));
-    
-    printSystem(chalk.magenta('🤖 Generating structured output...\n'));
-    
-
     const result = await generateObject({
       model: aiService.model,
       schema: ApplicationSchema,
@@ -119,8 +113,25 @@ Provide:
 - Setup commands (for example: cd folder, npm install, npm run dev OR just open index.html)
 - Make it visually appealing and functional`,
     });
+
+    return result.object;
+  } catch (err) {
+    console.error(chalk.red(`\n❌ AI Generation Error: ${err.message}`));
+    throw err;
+  }
+}
+
+/**
+ * Generate application using structured output and write to local disk (Server CLI usage)
+ */
+export async function generateApplication(description, aiService, cwd = process.cwd()) {
+  try {
+    printSystem(chalk.cyan('\n🤖 Agent Mode: Generating your application...\n'));
+    printSystem(chalk.gray(`Request: ${description}\n`));
     
-    const application = result.object;
+    printSystem(chalk.magenta('🤖 Generating structured output...\n'));
+    
+    const application = await generateProjectStructure(description, aiService);
     
     printSystem(chalk.green(`\n✅ Generated: ${application.folderName}\n`));
     printSystem(chalk.gray(`Description: ${application.description}\n`));
@@ -169,4 +180,4 @@ Provide:
     }
     throw err;
   }
-}
+}

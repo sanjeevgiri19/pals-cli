@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { Command } from "commander";
-import { select, isCancel, cancel } from "@clack/prompts";
+import { intro, select, isCancel, cancel } from "@clack/prompts";
 import yoctoSpinner from "yocto-spinner";
 import { getApiUrl } from "../config.js";
 import { apiRequest } from "../lib/api.js";
@@ -9,6 +9,7 @@ import {
   isTokenExpired,
 } from "../lib/token-store.js";
 import { runChatSession } from "./chat-session.js";
+import { runAgentSession } from "./agent-session.js";
 
 async function getBearer() {
   const token = await getStoredToken();
@@ -19,49 +20,63 @@ async function getBearer() {
   return token.access_token;
 }
 
-async function wakeupAction() {
+export async function wakeupAction() {
   const baseUrl = getApiUrl();
-  const spin = yoctoSpinner({ text: "Loading profile…" }).start();
+  const palPrimary = chalk.hex("#b6a0ff");
+  
+  intro(palPrimary.bold(" PALS PROMPT • TERMINAL v1.0.5 "));
+  
+  const spin = yoctoSpinner({ text: chalk.dim("Retrieving secure profile…") }).start();
+  let user;
   try {
     const json = await apiRequest(baseUrl, getBearer, "/api/me", {
       method: "GET",
     });
     spin.stop();
-    const user = json?.data;
-    if (!user) {
-      console.log(chalk.red("Unexpected /api/me response"));
-      process.exit(1);
-    }
-    console.log(chalk.green(`\nHi, ${user.name}!\n`));
+    user = json?.data;
+    if (!user) throw new Error("Could not decrypt API profile response");
+    
+    console.log(`\n  ${chalk.green("●")}  ${chalk.bold("Authenticated as:")} ${palPrimary(user.name)} ${chalk.dim("(" + user.email + ")")}\n`);
   } catch (e) {
     spin.stop();
-    console.log(chalk.red(e.message));
+    console.log(`\n  ${chalk.red("✖")}  ${chalk.red(e.message)}\n`);
     process.exit(1);
   }
 
   const choice = await select({
-    message: "What do you want to do?",
+    message: chalk.bold("Select Operation Context"),
     options: [
-      { value: "chat", label: "Chat", hint: "Talk to the assistant (uses your hosted API)" },
+      { 
+        value: "chat", 
+        label: palPrimary("Start Chat"), 
+        hint: "Contextual assistant session (hosted API)" 
+      },
       {
         value: "tools",
-        label: "Tool / agent mode",
-        hint: "Use the web app for tool & agent flows for now",
+        label: chalk.dim("Cloud Tools / Agents"),
+        hint: "Requires web dashboard for complex reasoning"
       },
+      {
+        value: "whoami",
+        label: "Sync Profile Info",
+        hint: "Validate local keychain vs API"
+      }
     ],
   });
 
   if (isCancel(choice)) {
-    cancel("Cancelled");
+    cancel(chalk.dim("Session aborted. Safe wake."));
     process.exit(0);
   }
 
   if (choice === "tools") {
-    console.log(
-      chalk.yellow(
-        "\nTool and agent modes are not exposed in this CLI yet. Use the Next.js app or the in-repo server CLI.\n",
-      ),
-    );
+    await runAgentSession();
+    process.exit(0);
+  }
+
+  if (choice === "whoami") {
+    const { whoamiAction } = await import("./whoami.js");
+    await whoamiAction();
     process.exit(0);
   }
 

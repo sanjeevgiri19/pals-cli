@@ -5,30 +5,17 @@ import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
+import { Terminal, Home, MessageSquare, FileText, Settings } from "lucide-react";
 
-/**
- * Renders the top navigation bar with site links, a "Launch Chat" call-to-action, and a user-profile dropdown when an authenticated session user exists.
- *
- * The profile dropdown displays the user's image, name (falls back to "User"), and email; it closes when clicking outside the dropdown and the Logout button signs the user out and redirects to `/sign-in`.
- *
- * @returns The rendered navigation header element.
- */
 export function Navbar() {
   const path = usePathname();
   const router = useRouter();
-  const { data } = authClient.useSession();
 
+  if (path === "/chat") return null;
+  const { data } = authClient.useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  const linkClass = (href: string) =>
-    `px-3 py-2 rounded-md text-sm font-medium ${
-      path === href
-        ? "bg-gray-900 text-white"
-        : "text-gray-200 hover:bg-gray-800"
-    }`;
-
-  // close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -41,83 +28,126 @@ export function Navbar() {
 
   const handleLogout = async () => {
     await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => router.push("/sign-in"),
-      },
+      fetchOptions: { onSuccess: () => router.push("/sign-in") },
     });
   };
 
-  return (
-    <header className="w-full border-b border-gray-200 dark:border-gray-800">
-      <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14">
-          {/* LEFT */}
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-lg font-semibold">
-              PALs CLI
-            </Link>
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/chat", label: "Chat" },
+    { href: "/docs", label: "Docs" },
+    { href: "/settings", label: "Settings" },
+  ];
 
-            <div className="hidden md:flex items-center gap-2">
-              <Link href="/" className={linkClass("/")}>
-                Home
-              </Link>
-              <Link href="/chat" className={linkClass("/chat")}>
-                Chat
-              </Link>
-              <Link href="/about" className={linkClass("/about")}>
-                About / FAQs
-              </Link>
-            </div>
+  const mobileNavLinks = [
+    { href: "/", label: "Home", Icon: Home },
+    { href: "/chat", label: "Chat", Icon: MessageSquare },
+    { href: "/docs", label: "Docs", Icon: FileText },
+    { href: "/settings", label: "Settings", Icon: Settings },
+  ];
+
+  return (
+    <>
+      <header
+        className="fixed top-0 left-0 right-0 z-50
+                   bg-[rgba(14,14,14,0.8)] backdrop-blur-[20px]
+                   shadow-[0_20px_40px_rgba(0,0,0,0.4)]
+                   border-b border-white/[0.04]"
+      >
+        <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
+
+          {/* Logo */}
+          <div className="flex items-center gap-2.5">
+            <Terminal size={20} className="text-[var(--pal-primary)]" />
+            <span className="text-[1.125rem] font-extrabold tracking-[-0.03em] text-white">
+              Pals-CLI
+            </span>
+            <p className="hidden lg:block font-mono text-[0.625rem] uppercase tracking-[0.18em]
+                          text-[var(--pal-muted)] border-l border-white/10 ml-3 pl-3">
+              AI-Powered Intelligence for Your Terminal.
+            </p>
           </div>
 
-          {/* RIGHT */}
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-8">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`font-sans text-[0.9rem] tracking-[-0.01em] no-underline
+                            transition-colors duration-200
+                            ${path === href
+                              ? "text-[var(--pal-primary)]"
+                              : "text-[var(--pal-muted)] hover:text-[var(--pal-primary)]"
+                            }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right side */}
           <div className="flex items-center gap-3">
             <Link
               href="/chat"
-              className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm"
+              className="inline-flex items-center justify-center gap-2
+                         px-5 py-2 rounded-full font-bold text-sm
+                         bg-gradient-to-br from-[var(--pal-primary)] to-[var(--pal-primary-dim)]
+                         text-[var(--pal-primary-on)] no-underline whitespace-nowrap
+                         transition-all duration-300
+                         hover:shadow-[0_0_30px_rgba(182,160,255,0.4)]
+                         active:scale-95"
             >
-              Launch Chat
+              Get Started
             </Link>
 
-            {/* USER PROFILE */}
+            {/* User avatar */}
             {data?.user && (
               <div ref={ref} className="relative">
-                <button onClick={() => setOpen(!open)}>
+                <button
+                  id="profile-menu-button"
+                  onClick={() => setOpen(!open)}
+                  className="w-9 h-9 rounded-full border border-white/10 overflow-hidden
+                             transition-colors duration-200
+                             hover:border-[rgba(182,160,255,0.5)]"
+                >
                   <Image
                     src={data.user.image || "/vercel.svg"}
                     alt="profile"
                     width={36}
                     height={36}
-                    className="rounded-full border object-cover"
+                    className="object-cover"
                   />
                 </button>
 
-                {/* DROPDOWN */}
                 {open && (
-                  <div className="absolute right-0 mt-3 w-64 bg-zinc-900 border border-zinc-700 rounded-xl shadow-lg p-4 z-50">
+                  <div className="absolute right-0 mt-3 w-64 z-50
+                                  bg-[var(--pal-surface-mid)] rounded-xl
+                                  border border-white/[0.07] overflow-hidden p-4">
                     <div className="flex items-center gap-3 mb-4">
                       <Image
                         src={data.user.image || "/vercel.svg"}
                         alt="profile"
                         width={48}
                         height={48}
-                        className="rounded-full"
+                        className="rounded-full border border-white/10"
                       />
                       <div className="overflow-hidden">
                         <p className="text-sm font-semibold text-white truncate">
                           {data.user.name || "User"}
                         </p>
-                        <p className="text-xs text-zinc-400 truncate">
+                        <p className="text-xs text-[var(--pal-muted)] truncate">
                           {data.user.email}
                         </p>
                       </div>
                     </div>
-
                     <button
                       onClick={handleLogout}
-                      className="w-full text-sm bg-red-600 hover:bg-red-700 text-white py-2 rounded-md"
+                      className="w-full text-sm bg-red-500/10 hover:bg-red-500/20
+                                 text-red-400 border border-red-500/20
+                                 py-2 rounded-full transition-colors duration-200"
                     >
-                      Logout
+                      Sign Out
                     </button>
                   </div>
                 )}
@@ -125,7 +155,37 @@ export function Navbar() {
             )}
           </div>
         </div>
-      </nav>
-    </header>
+      </header>
+
+      {/* Mobile Bottom Navigation */}
+      <footer
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50
+                   bg-[rgba(14,14,14,0.92)] backdrop-blur-[16px]
+                   border-t border-white/[0.08] rounded-t-2xl"
+      >
+        <div className="flex justify-around items-center h-16 px-4">
+          {mobileNavLinks.map(({ href, label, Icon }) => {
+            const isActive = path === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex flex-col items-center justify-center gap-0.5
+                            px-3 py-1 rounded-xl no-underline
+                            font-mono text-[0.5rem] uppercase tracking-[0.1em]
+                            transition-colors duration-200
+                            ${isActive
+                              ? "text-[var(--pal-primary)] bg-[rgba(182,160,255,0.08)]"
+                              : "text-[var(--pal-muted)] hover:bg-white/[0.04]"
+                            }`}
+              >
+                <Icon size={22} />
+                <span>{label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </footer>
+    </>
   );
 }
