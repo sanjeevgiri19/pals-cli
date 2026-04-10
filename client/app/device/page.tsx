@@ -43,34 +43,32 @@ export default function DeviceAuthorizationPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[#0e0e0e] text-white font-sans flex items-center justify-center px-6">
+      <div className="w-full max-w-md space-y-8">
         {/* Header Section */}
         <div className="flex flex-col items-center gap-4 mb-8">
-          <div className="p-3 rounded-lg border-2 border-dashed border-zinc-700">
-            <ShieldAlert className="w-8 h-8 text-yellow-300" />
+          <div className="p-3 rounded-lg border border-white/10 bg-[#131313]">
+            <ShieldAlert className="w-8 h-8 text-[var(--pal-primary)]" />
           </div>
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-foreground mb-2">
+            <h1 className="text-3xl font-bold text-white mb-2">
               Device Authorization
             </h1>
-            <p className="text-muted-foreground">
-              Enter your device code to continue
-            </p>
+            <p className="text-[#adaaaa]">Enter your device code to continue</p>
           </div>
         </div>
 
         {/* Form Card */}
         <form
           onSubmit={handleSubmit}
-          className="border-2 border-dashed border-zinc-700 rounded-xl p-8 bg-zinc-950 backdrop-blur-sm"
+          className="bg-[#131313] border border-white/5 rounded-xl p-8 transition-all hover:bg-[#1a1919] hover:border-[#b6a0ff]/20"
         >
           <div className="space-y-6">
             {/* Code Input */}
             <div>
               <label
                 htmlFor="code"
-                className="block text-sm font-medium text-foreground mb-2"
+                className="block text-sm font-medium text-white mb-2"
               >
                 Device Code
               </label>
@@ -81,16 +79,16 @@ export default function DeviceAuthorizationPage() {
                 onChange={handleCodeChange}
                 placeholder="XXXX-XXXX"
                 maxLength={9}
-                className="w-full px-4 py-3 bg-zinc-900 border-2 border-dashed border-zinc-700 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:border-zinc-600 font-mono text-center text-lg tracking-widest"
+                className="w-full px-4 py-3 bg-[#1a1919] border border-white/5 rounded-lg text-white placeholder-[#adaaaa] focus:outline-none focus:border-[#b6a0ff]/50 font-mono text-center text-lg tracking-widest transition-colors"
               />
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-[#adaaaa] mt-2">
                 Find this code on the device you want to authorize
               </p>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="p-3 rounded-lg bg-red-950 border border-red-900 text-red-200 text-sm">
+              <div className="p-3 rounded-lg bg-red-950/50 border border-red-900/50 text-red-200 text-sm">
                 {error}
               </div>
             )}
@@ -99,14 +97,14 @@ export default function DeviceAuthorizationPage() {
             <button
               type="submit"
               disabled={isLoading || userCode.length < 9}
-              className="w-full py-3 px-4 bg-zinc-100 text-zinc-950 font-semibold rounded-lg hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 px-4 bg-gradient-to-br from-[#b6a0ff] to-[#7e51ff] text-black font-bold rounded-xl hover:shadow-[0_0_30px_rgba(182,160,255,0.4)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
               {isLoading ? "Verifying..." : "Continue"}
             </button>
 
             {/* Info Box */}
-            <div className="p-4 bg-zinc-900 border-2 border-dashed border-zinc-700 rounded-lg">
-              <p className="text-xs text-muted-foreground leading-relaxed">
+            <div className="p-4 bg-[#1a1919] border border-white/5 rounded-lg">
+              <p className="text-xs text-[#adaaaa] leading-relaxed">
                 This code is unique to your device and will expire shortly. Keep
                 it confidential and never share it with anyone.
               </p>

@@ -32,7 +32,7 @@ export function MessageList({
   if (isLoading && messages.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--pal-primary)] opacity-50" />
+        <Loader2 className="w-8 h-8 animate-spin text-(--pal-primary) opacity-50" />
       </div>
     );
   }
@@ -58,7 +58,7 @@ export function MessageList({
         <div className="flex items-center justify-center h-full">
           <div className="text-center space-y-4">
             <div className="w-16 h-16 rounded-3xl bg-white/5 flex items-center justify-center mx-auto mb-6">
-                <Loader2 className="w-8 h-8 text-[var(--pal-primary)] opacity-20" />
+                <Loader2 className="w-8 h-8 text-(--pal-primary) opacity-20" />
             </div>
             <p className="text-2xl font-black tracking-tight text-white m-0">No active context</p>
             <p className="text-sm font-mono uppercase tracking-[0.2em] text-[#adaaaa]">Start a secure session below</p>
