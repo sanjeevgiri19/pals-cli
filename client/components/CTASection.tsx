@@ -1,4 +1,5 @@
-import { ArrowRight, GitBranchPlus, Link } from "lucide-react";
+import { ArrowRight, GitBranchPlus } from "lucide-react";
+import Link from "next/link";
 
 export const CTASection = () => {
   return (

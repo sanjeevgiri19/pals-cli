@@ -61,6 +61,7 @@ Folder map (what’s in the repo and how it relates to the app)
 
 From the project root you can install both sides separately.
 
+**Using npm:**
 ```bash
 # Server
 cd server
@@ -69,6 +70,28 @@ npm install
 # Client
 cd ../client
 npm install
+```
+
+**Using yarn:**
+```bash
+# Server
+cd server
+yarn install
+
+# Client
+cd ../client
+yarn install
+```
+
+**Using pnpm:**
+```bash
+# Server
+cd server
+pnpm install
+
+# Client
+cd ../client
+pnpm install
 ```
 
 ## Environment variables
@@ -110,6 +133,7 @@ Notes:
 1. Ensure Postgres is running and `DATABASE_URL` is set correctly.
 2. Run migrations:
 
+**Using npm:**
 ```bash
 cd server
 npm run prisma:migrate
@@ -117,22 +141,64 @@ npm run prisma:migrate
 npx prisma migrate dev --name init
 ```
 
+**Using yarn:**
+```bash
+cd server
+yarn prisma:migrate
+# or
+yarn prisma migrate dev --name init
+```
+
+**Using pnpm:**
+```bash
+cd server
+pnpm prisma:migrate
+# or
+pnpm prisma migrate dev --name init
+```
+
 ## Run in development
 
 Open two terminals (or use a process manager), one for the server and one for the client.
 
-Server
+**Server**
 
+Using npm:
 ```bash
 cd server
 npm run dev
 ```
 
-Client
+Using yarn:
+```bash
+cd server
+yarn dev
+```
 
+Using pnpm:
+```bash
+cd server
+pnpm dev
+```
+
+**Client**
+
+Using npm:
 ```bash
 cd client
 npm run dev
+```
+
+Using yarn:
+```bash
+cd client
+yarn dev
+```
+
+Using pnpm:
+```bash
+cd client
+pnpm dev
 ```
 
 The web UI will be available at `http://localhost:3000` and the API at the server port (default `http://localhost:3005`).

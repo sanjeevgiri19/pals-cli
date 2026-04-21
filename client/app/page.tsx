@@ -97,7 +97,7 @@ export default function HomePage() {
                                font-mono text-[0.6rem] uppercase tracking-[0.15em] text-[#adaaaa]"
               >
                 <span className="w-2 h-2 rounded-full bg-[var(--pal-primary)] animate-pulse-dot" />
-                v1.2.0 stable release
+                v1.5.0 stable release
               </span>
             </div>
 
@@ -149,7 +149,7 @@ export default function HomePage() {
               <AvatarStack />
               <div>
                 <span className="block font-bold text-white">
-                  Used by 2,000+ developers
+                  Used by 1,000+ developers
                 </span>
                 <span className="font-mono text-[0.6rem] uppercase tracking-widest">
                   Join the alpha cohort

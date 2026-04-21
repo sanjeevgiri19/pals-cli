@@ -4,6 +4,14 @@ import { useState } from "react";
 import { Terminal, Download, KeyRound, Rocket, CheckCircle2, Zap, Copy, Check } from "lucide-react";
 import { Footer } from "@/components/ui/Footer";
 
+type PackageManager = "npm" | "yarn" | "pnpm";
+
+const packageManagers: { id: PackageManager; label: string; command: string }[] = [
+  { id: "npm", label: "npm", command: "npm i -g palscli" },
+  { id: "yarn", label: "yarn", command: "yarn global add palscli" },
+  { id: "pnpm", label: "pnpm", command: "pnpm add -g palscli" },
+];
+
 const steps = [
   {
     num: "01",
@@ -68,6 +76,9 @@ function CopyButton({ text }: { text: string }) {
 }
 
 export default function DocsPage() {
+  const [selectedPM, setSelectedPM] = useState<PackageManager>("npm");
+  const selectedCommand = packageManagers.find((pm) => pm.id === selectedPM)?.command || "";
+
   return (
     <div className="bg-[var(--pal-bg)] text-[var(--pal-on-surface)] min-h-screen">
       <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
@@ -103,6 +114,23 @@ export default function DocsPage() {
 
         {/* Install command strip */}
         <section className="mb-24">
+          {/* Package Manager Tabs */}
+          <div className="flex gap-2 mb-4">
+            {packageManagers.map((pm) => (
+              <button
+                key={pm.id}
+                onClick={() => setSelectedPM(pm.id)}
+                className={`px-4 py-2 rounded-lg font-mono text-sm font-semibold transition-all duration-200 ${
+                  selectedPM === pm.id
+                    ? "bg-[var(--pal-primary)] text-black"
+                    : "bg-[var(--pal-surface-mid)] text-[var(--pal-muted)] hover:bg-[var(--pal-surface-highest)]"
+                }`}
+              >
+                {pm.label}
+              </button>
+            ))}
+          </div>
+
           <div className="bg-black rounded-xl p-1 overflow-hidden">
             <div className="bg-[var(--pal-surface-low)] rounded-lg p-8
                             flex flex-col md:flex-row items-center justify-between gap-6
@@ -125,12 +153,12 @@ export default function DocsPage() {
                     Global Installation
                   </label>
                   <code className="font-mono text-xl md:text-3xl text-white">
-                    npm i -g palscli
+                    {selectedCommand}
                   </code>
                 </div>
               </div>
 
-              <CopyButton text="npm i -g palscli" />
+              <CopyButton text={selectedCommand} />
             </div>
           </div>
         </section>
@@ -195,7 +223,7 @@ export default function DocsPage() {
                 The Developer&apos;s Edge
               </h2>
               <p className="text-[var(--pal-muted)] max-w-lg mb-8">
-                Join 50k+ developers orchestrating their infrastructure through
+                Join hundreds of developers orchestrating their infrastructure through
                 the pals interface.
               </p>
 
