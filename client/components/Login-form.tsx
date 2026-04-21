@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 
@@ -26,12 +26,14 @@ export function LoginForm() {
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center space-y-6">
-          <h1 className="text-[clamp(2.75rem,7vw,3.5rem)] px-2 font-black tracking-tighter leading-[0.92]">
-            Welcome to{" "}
-            <span className="bg-gradient-to-br mt-2 from-[#b6a0ff] via-[#a98fff] to-[#bc8df9] bg-clip-text text-transparent">
+          <h1 className="text-[50px] px-2 font-black tracking- leading-[1.05]">
+            <span className="block tracking-wider">Welcome to</span>
+
+            <span className="block  text-[64px] bg-linear-to-br from-[#b6a0ff] via-[#a98fff] to-[#bc8df9] bg-clip-text text-transparent">
               Pals-CLI
             </span>
           </h1>
+
           <p className="text-[#adaaaa] text-lg">
             Secure authentication for your terminal companion
           </p>
